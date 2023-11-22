@@ -111,8 +111,7 @@ bool CollisionDetection::RayOBBIntersection(const Ray &r, const Transform &world
 
     Ray tempRay(invTransform * localRayPos, invTransform * r.GetDirection());
 
-    bool collided = RayBoxIntersection(tempRay, Vector3(),
-                                       volume.GetHalfDimensions(), collision);
+    bool collided = RayBoxIntersection(tempRay, Vector3(), volume.GetHalfDimensions(), collision);
 
     if (collided) {
         collision.collidedAt = transform * collision.collidedAt + position;
