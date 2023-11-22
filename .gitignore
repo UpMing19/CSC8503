@@ -1,0 +1,46 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+#*.vsidx
+#*.ipch
+#*.db
+#/.vs/CSC8503/FileContentIndex/read.lock
+#/.vs
+#/Build
+#/out/build/x64-Debug
+# CMake build directory
+build/
+
+# Compiled object files
+*.o
+
+# Compiled binary executables
+*.exe
+*.out
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CMakeLists.txt.user
+
+# Generated Makefiles
+Makefile
+Makefile.*
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Dependency directories
+dependencies/
+
+# Large files exceeding GitHub's file size limit
+CSC8503CoreClasses/CMakeFiles/CSC8503CoreClasses.dir/cmake_pch.cxx.pch
+NCLCoreClasses/CMakeFiles/NCLCoreClasses.dir/cmake_pch.cxx.pch
+OpenGLRendering/CMakeFiles/OpenGLRendering.dir/cmake_pch.cxx.pch
+
+CSC8503CoreClasses/CMakeFiles/*
+NCLCoreClasses/CMakeFiles/*
+OpenGLRendering/CMakeFiles/*
