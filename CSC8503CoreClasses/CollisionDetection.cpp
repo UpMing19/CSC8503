@@ -327,7 +327,7 @@ Matrix4 GenerateInverseProjection(float aspect, float nearPlane, float farPlane,
 Vector3 CollisionDetection::Unproject(const Vector3 &screenPos, const PerspectiveCamera &cam) {
     Vector2i screenSize = Window::GetWindow()->GetScreenSize();
 
-    float aspect = screenSize.x / screenSize.y;
+    float aspect = (float)screenSize.x /  (float)screenSize.y;
     float fov = cam.GetFieldOfVision();
     float nearPlane = cam.GetNearPlane();
     float farPlane = cam.GetFarPlane();
