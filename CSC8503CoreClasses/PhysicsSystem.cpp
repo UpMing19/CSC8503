@@ -190,6 +190,27 @@ a particular pair will only be added once, so objects colliding for
 multiple frames won't flood the set with duplicates.
 */
 void PhysicsSystem::BasicCollisionDetection() {
+    std::vector<GameObject *>::const_iterator first;
+    std::vector<GameObject *>::const_iterator last;
+    gameWorld.GetObjectIterators(first, last);
+
+    for (auto i = first; i != last; ++i) {
+        if ((*i)->GetPhysicsObject() == nullptr) {
+            continue;
+        }
+        for (auto j = i + 1; j != last; ++j) {
+            if ((*j)->GetPhysicsObject() == nullptr) {
+                continue;
+            }
+            CollisionDetection::CollisionInfo info;
+            if (CollisionDetection::ObjectIntersection(*i, *j, info)) {
+                std::cout << " Collision between " << (*i)->GetName()
+                          << " and " << (*j)->GetName() << std::endl;
+                info.framesLeft = numCollisionFrames;
+                allCollisions.insert(info);
+            }
+        }
+    }
 }
 
 /*
@@ -309,7 +330,7 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
         transform.SetOrientation(orientation);
 
         // Damp the angular velocity too
-        float frameAngularDamping = 1.0f - (0.4f * dt );
+        float frameAngularDamping = 1.0f - (0.4f * dt);
         angVel = angVel * frameAngularDamping;
         object->SetAngularVelocity(angVel);
 
