@@ -52,6 +52,9 @@ namespace NCL {
 			GameObject* AddEnemyToWorld(const Vector3& position);
 			GameObject* AddBonusToWorld(const Vector3& position);
 
+
+			void BridgeConstraintTest();
+
 #ifdef USEVULKAN
 			GameTechVulkanRenderer*	renderer;
 #else

@@ -543,3 +543,26 @@ void TutorialGame::MoveSelectedObject() {
 }
 
 
+void TutorialGame ::BridgeConstraintTest() {
+    Vector3 cubeSize   = Vector3( 8, 8, 8 );
+    float invCubeMass  = 5;  // how heavy the middle pieces are
+    int numLinks       = 10;
+    float maxDistance  = 30;  // constraint distance
+    float cubeDistance = 20;  // distance between links
+
+    Vector3 startPos = Vector3( 500, 500, 500 );
+
+    GameObject* start = AddCubeToWorld( startPos + Vector3( 0, 0, 0 ), cubeSize, 0 );
+    GameObject* end   = AddCubeToWorld( startPos + Vector3( ( numLinks + 2 ) * cubeDistance, 0, 0 ), cubeSize, 0 );
+
+    GameObject* previous = start;
+
+    for ( int i = 0; i < numLinks; ++i ) {
+        GameObject* block              = AddCubeToWorld( startPos + Vector3( ( i + 1 ) * cubeDistance, 0, 0 ), cubeSize, invCubeMass );
+        PositionConstraint* constraint = new PositionConstraint( previous, block, maxDistance );
+        world -> AddConstraint( constraint );
+        previous = block;
+    }
+    PositionConstraint* constraint = new PositionConstraint( previous, end, maxDistance );
+    world -> AddConstraint( constraint );
+}
