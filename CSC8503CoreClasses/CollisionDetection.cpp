@@ -6,6 +6,8 @@
 #include "Window.h"
 #include "Maths.h"
 #include "Debug.h"
+#include <algorithm>
+#include "Vector3.h"
 
 using namespace NCL;
 
@@ -332,7 +334,23 @@ bool CollisionDetection::AABBSphereIntersection(const AABBVolume &volumeA, const
 
     Vector3 boxSize = volumeA.GetHalfDimensions();
     Vector3 delta = worldTransformB.GetPosition() - worldTransformA.GetPosition();
-    Vector3 closestPointOnBox = Maths::Vector3::Clamp(delta, -boxSize, boxSize);
+ //   Vector3 closestPointOnBox = Maths::Vector3::Clamp(delta, -boxSize, boxSize);
+
+
+/*    Vector3 closestPointOnBox(
+            std::clamp(delta.x, -boxSize.x, boxSize.x),
+            std::clamp(delta.y, -boxSize.y, boxSize.y),
+            std::clamp(delta.z, -boxSize.z, boxSize.z)
+    );*/
+
+    Vector3 closestPointOnBox = [&]() -> Vector3 {
+        return Vector3(
+                std::clamp(delta.x, -boxSize.x, boxSize.x),
+                std::clamp(delta.y, -boxSize.y, boxSize.y),
+                std::clamp(delta.z, -boxSize.z, boxSize.z)
+        );
+    }();
+
 
     Vector3 localPoint = delta - closestPointOnBox;
     float distance = localPoint.Length();
