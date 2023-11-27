@@ -334,7 +334,7 @@ bool CollisionDetection::AABBSphereIntersection(const AABBVolume &volumeA, const
 
     Vector3 boxSize = volumeA.GetHalfDimensions();
     Vector3 delta = worldTransformB.GetPosition() - worldTransformA.GetPosition();
- //   Vector3 closestPointOnBox = Maths::Vector3::Clamp(delta, -boxSize, boxSize);
+    // Vector3 closestPointOnBox = NCL::Maths::Vector3::Clamp(delta, -boxSize, boxSize);
 
 
 /*    Vector3 closestPointOnBox(
