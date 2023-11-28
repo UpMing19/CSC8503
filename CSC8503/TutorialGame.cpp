@@ -137,7 +137,13 @@ void TutorialGame::UpdateGame(float dt) {
 	renderer->Update(dt);
 	physics->Update(dt);
 
-	renderer->Render();
+    if ( testStateObject ) {
+        //std::cout<<"debug"<<std::endl;
+         testStateObject -> Update ( dt );
+    }
+
+
+    renderer->Render();
 	Debug::UpdateRenderables(dt);
 }
 
@@ -260,7 +266,7 @@ void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
 
-	InitMixedGridWorld(15, 15, 3.5f, 3.5f);
+    InitMixedGridWorld(15, 15, 3.5f, 3.5f);
 
 	InitGameExamples();
 	InitDefaultFloor();
@@ -379,7 +385,7 @@ GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
 		.SetScale(Vector3(meshSize, meshSize, meshSize))
 		.SetPosition(position);
 
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), enemyMesh, nullptr, basicShader));
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), enemyMesh, nullptr, basicShader));// todo can change capsule
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -418,6 +424,9 @@ void TutorialGame::InitGameExamples() {
 	AddPlayerToWorld(Vector3(0, 5, 0));
 	AddEnemyToWorld(Vector3(5, 5, 0));
 	AddBonusToWorld(Vector3(10, 5, 0));
+
+    testStateObject = AddStateObjectToWorld ( Vector3 (0 , 10 ,0));
+
 }
 
 void TutorialGame::InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius) {
@@ -523,7 +532,7 @@ line - after the third, they'll be able to twist under torque aswell.
 */
 
 void TutorialGame::MoveSelectedObject() {
-   // renderer -> DrawString ( " Click Force : " + std :: to_string ( forceMagnitude ) ,25 Vector2 (10 , 20));
+   // renderer -> DrawString ( " Click Force : " + std :: to_string ( forceMagnitude ) , Vector2 (10 , 20));
 	Debug::Print("Click Force:" + std::to_string(forceMagnitude), Vector2(5, 90));
 	forceMagnitude += Window::GetMouse()->GetWheelMovement() * 100.0f;
 
@@ -567,3 +576,24 @@ void TutorialGame ::BridgeConstraintTest() {
     PositionConstraint* constraint = new PositionConstraint( previous, end, maxDistance );
     world -> AddConstraint( constraint );
 }
+
+StateGameObject * TutorialGame::AddStateObjectToWorld ( const Vector3 & position ){
+    StateGameObject* apple = new StateGameObject();
+
+    SphereVolume* volume = new SphereVolume(0.5f);
+    apple->SetBoundingVolume((CollisionVolume*)volume);
+    apple->GetTransform()
+            .SetScale(Vector3(2, 2, 2))
+            .SetPosition(position);
+
+    apple->SetRenderObject(new RenderObject(&apple->GetTransform(), bonusMesh, nullptr, basicShader));
+    apple->SetPhysicsObject(new PhysicsObject(&apple->GetTransform(), apple->GetBoundingVolume()));
+
+    apple->GetPhysicsObject()->SetInverseMass(1.0f);
+    apple->GetPhysicsObject()->InitSphereInertia();
+
+    world->AddGameObject(apple);
+
+    return apple;
+}
+
