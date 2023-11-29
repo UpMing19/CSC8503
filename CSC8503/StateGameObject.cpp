@@ -32,7 +32,7 @@ StateGameObject::StateGameObject() {
 
     stateMachine->AddTransition(new StateTransition(stateB, stateA,
                                                     [&]() -> bool {
-                                                        return this->counter < 2.5f;
+                                                        return this->counter < 0.0f;
                                                     }
     ));
 }
@@ -49,9 +49,12 @@ void StateGameObject::Update(float dt) {
 void StateGameObject::MoveLeft(float dt) {
     GetPhysicsObject()->AddForce({-10, 0, 0});
     counter += dt;
+   // std::cout<<"counter:"<<counter<<std::endl;
 }
 
 void StateGameObject::MoveRight(float dt) {
+   // std::cout<<"counter:"<<counter<<std::endl;
     GetPhysicsObject()->AddForce({10, 0, 0});
     counter -= dt;
+   // std::cout<<"counter:"<<counter<<std::endl;
 }

@@ -266,6 +266,8 @@ void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
 
+    testStateObject = AddStateObjectToWorld ( Vector3 (0 , 10 ,0));
+
     InitMixedGridWorld(15, 15, 3.5f, 3.5f);
 
 	InitGameExamples();
@@ -425,7 +427,6 @@ void TutorialGame::InitGameExamples() {
 	AddEnemyToWorld(Vector3(5, 5, 0));
 	AddBonusToWorld(Vector3(10, 5, 0));
 
-    testStateObject = AddStateObjectToWorld ( Vector3 (0 , 10 ,0));
 
 }
 
@@ -578,22 +579,25 @@ void TutorialGame ::BridgeConstraintTest() {
 }
 
 StateGameObject * TutorialGame::AddStateObjectToWorld ( const Vector3 & position ){
-    StateGameObject* apple = new StateGameObject();
+    StateGameObject* cube = new StateGameObject();
 
-    SphereVolume* volume = new SphereVolume(0.5f);
-    apple->SetBoundingVolume((CollisionVolume*)volume);
-    apple->GetTransform()
-            .SetScale(Vector3(2, 2, 2))
-            .SetPosition(position);
+    Vector3 dimensions = Vector3(1,1,1);
 
-    apple->SetRenderObject(new RenderObject(&apple->GetTransform(), bonusMesh, nullptr, basicShader));
-    apple->SetPhysicsObject(new PhysicsObject(&apple->GetTransform(), apple->GetBoundingVolume()));
+    AABBVolume* volume = new AABBVolume(dimensions);
+    cube->SetBoundingVolume((CollisionVolume*)volume);
 
-    apple->GetPhysicsObject()->SetInverseMass(1.0f);
-    apple->GetPhysicsObject()->InitSphereInertia();
+    cube->GetTransform()
+            .SetPosition(position)
+            .SetScale(dimensions * 2);
 
-    world->AddGameObject(apple);
+    cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
+    cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 
-    return apple;
+    cube->GetPhysicsObject()->SetInverseMass(1.0f);
+    cube->GetPhysicsObject()->InitCubeInertia();
+
+    world->AddGameObject(cube);
+
+    return cube;
 }
 
