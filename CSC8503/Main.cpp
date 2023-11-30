@@ -189,13 +189,13 @@ void TestBehaviourTree() {
     rootSequence->AddChild(selection);
 
     for (int i = 0; i < 5; ++i) {
-        rootSequence -> Reset();
+        rootSequence->Reset();
         behaviourTimer = 0.0f;
         distanceToTarget = rand() % 250;
         BehaviourState state = Ongoing;
         std::cout << "We ’re going on an adventure !\n";
         while (state == Ongoing) {
-            state = rootSequence -> Execute(1.0f ); // fake dt
+            state = rootSequence->Execute(1.0f); // fake dt
         }
         if (state == Success) {
             std::cout << " What a successful adventure !\n";
@@ -204,6 +204,83 @@ void TestBehaviourTree() {
         }
     }
     std::cout << "All done !\n";
+}
+
+class PauseScreen : public PushdownState {
+
+    PushdownResult OnUpdate(float dt, PushdownState **newState) override {
+        if (Window::GetKeyboard()->KeyPressed(KeyCodes::U)) {
+            return PushdownResult::Pop;
+        }
+        return PushdownResult::NoChange;
+    }
+
+    void OnAwake() override {
+        std::cout << " Press U to unpause game !\n";
+    }
+
+};
+
+class GameScreen : public PushdownState {
+    PushdownResult OnUpdate(float dt,
+                            PushdownState **newState) override {
+        pauseReminder -= dt;
+        if (pauseReminder < 0) {
+            std::cout << " Coins mined : " << coinsMined << "\n";
+            std::cout << " Press P to pause game , or F1  to return to main menu!\n";
+            pauseReminder += 1.0f;
+        }
+        if (Window::GetKeyboard()->KeyDown(KeyCodes::P)) {
+            *newState = new PauseScreen();
+            return PushdownResult::Push;
+        }
+        if (Window::GetKeyboard()->KeyDown(KeyCodes::F1)) {
+            std::cout << " Returning to main menu !\n";
+            return PushdownResult::Pop;
+        }
+        if (rand() % 70 == 0) {
+            coinsMined++;
+        }
+        return PushdownResult::NoChange;
+    };
+
+    void OnAwake() override {
+        std::cout << " Preparing to mine coins !\n";
+    }
+
+protected :
+    int coinsMined = 0;
+    float pauseReminder = 1;
+};
+
+class IntroScreen : public PushdownState {
+    PushdownResult OnUpdate(float dt,
+                            PushdownState **newState) override {
+        if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
+            *newState = new GameScreen();
+            return PushdownResult::Push;
+        }
+        if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE)) {
+            return PushdownResult::Pop;
+        }
+        return PushdownResult::NoChange;
+    };
+
+
+    void OnAwake() override {
+        std::cout << " Welcome to a really awesome game !\n";
+        std::cout << " Press Space To Begin or escape to quit !\n";
+    }
+};
+
+void TestPushdownAutomata(Window *w) {
+    PushdownMachine machine(new IntroScreen());
+    while (w -> UpdateWindow()) {
+        float dt = w -> GetTimer().GetTimeDeltaSeconds();
+        if (!machine.Update(dt)) {
+            return;
+        }
+    }
 }
 
 /*
@@ -221,10 +298,10 @@ hide or show the
 int main() {
 
 
-    TestBehaviourTree();
+    //TestBehaviourTree();
     //TestStateMachine();
     Window *w = Window::CreateGameWindow("CSC8503 Game technology!", 1280, 720);
-
+    //TestPushdownAutomata(w);
     if (!w->HasInitialised()) {
         return -1;
     }
@@ -259,4 +336,5 @@ int main() {
     }
 
     Window::DestroyGameWindow();
+
 }
