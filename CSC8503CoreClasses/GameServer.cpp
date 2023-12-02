@@ -71,3 +71,28 @@ void GameServer::UpdateServer() {
 void GameServer::SetGameWorld(GameWorld &g) {
 	gameWorld = &g;
 }
+
+/*
+
+bool GameServer::SendPacketToPeer(int peerID, int msgID) {
+    GamePacket packet;
+    packet.type = msgID;
+    return SendPacketToPeer(peerID, packet);
+}
+
+bool GameServer::SendPacketToPeer(int peerID, GamePacket& packet) {
+    ENetPeer* peer = enet_host_get_peer(netHandle, peerID);
+
+    if (!peer) {
+        std::cout << "Server: Peer not found with ID " << peerID << std::endl;
+        return false;
+    }
+
+    ENetPacket* dataPacket = enet_packet_create(&packet, packet.GetTotalSize(), 0);
+    enet_peer_send(peer, 0, dataPacket);
+
+    return true;
+}
+
+
+*/
