@@ -39,6 +39,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	controller.MapAxis(4, "YLook");
 
 	InitialiseAssets();
+    BridgeConstraintTest();
 }
 
 /*
@@ -268,7 +269,7 @@ void TutorialGame::InitWorld() {
 
     testStateObject = AddStateObjectToWorld ( Vector3 (0 , 10 ,0));
 
-    InitMixedGridWorld(15, 15, 3.5f, 3.5f);
+   // InitMixedGridWorld(15, 15, 3.5f, 3.5f);
 
 	InitGameExamples();
 	InitDefaultFloor();
@@ -280,7 +281,7 @@ A single function to add a large immoveable cube to the bottom of our world
 
 */
 GameObject* TutorialGame::AddFloorToWorld(const Vector3& position) {
-	GameObject* floor = new GameObject();
+	GameObject* floor = new GameObject("Floor");
 
 	Vector3 floorSize = Vector3(200, 2, 200);
 	AABBVolume* volume = new AABBVolume(floorSize);
@@ -354,7 +355,7 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 	float meshSize		= 1.0f;
 	float inverseMass	= 0.5f;
 
-	GameObject* character = new GameObject();
+	GameObject* character = new GameObject("Player");
 	SphereVolume* volume  = new SphereVolume(1.0f);
 
 	character->SetBoundingVolume((CollisionVolume*)volume);
@@ -378,7 +379,7 @@ GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
 	float meshSize		= 3.0f;
 	float inverseMass	= 0.5f;
 
-	GameObject* character = new GameObject();
+	GameObject* character = new GameObject("Enemy");
 
 	AABBVolume* volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
 	character->SetBoundingVolume((CollisionVolume*)volume);
@@ -425,7 +426,7 @@ void TutorialGame::InitDefaultFloor() {
 void TutorialGame::InitGameExamples() {
 	AddPlayerToWorld(Vector3(0, 5, 0));
 	AddEnemyToWorld(Vector3(5, 5, 0));
-	AddBonusToWorld(Vector3(10, 5, 0));
+	//AddBonusToWorld(Vector3(10, 5, 0));
 
 
 }
@@ -561,7 +562,7 @@ void TutorialGame ::BridgeConstraintTest() {
     float maxDistance  = 30;  // constraint distance
     float cubeDistance = 20;  // distance between links
 
-    Vector3 startPos = Vector3( 500, 500, 500 );
+    Vector3 startPos = Vector3( 5, 100, 5 );
 
     GameObject* start = AddCubeToWorld( startPos + Vector3( 0, 0, 0 ), cubeSize, 0 );
     GameObject* end   = AddCubeToWorld( startPos + Vector3( ( numLinks + 2 ) * cubeDistance, 0, 0 ), cubeSize, 0 );
