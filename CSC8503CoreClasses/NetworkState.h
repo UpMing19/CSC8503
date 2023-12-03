@@ -3,7 +3,7 @@
 namespace NCL {
 	using namespace Maths;
 	namespace CSC8503 {
-		//class GameObject;
+		class GameObject;
 		class NetworkState	{
 		public:
 			NetworkState();
