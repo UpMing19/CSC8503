@@ -34,7 +34,7 @@ void GameClient ::UpdateClient() {
         }
         else if ( event.type == ENET_EVENT_TYPE_RECEIVE ) {
             std ::cout << " Client : Packet recieved ... " << std ::endl;
-            GamePacket* packet = ( GamePacket* )event.packet - > data;
+            GamePacket* packet = ( GamePacket* )event.packet -> data;
             ProcessPacket( packet );
         }
         enet_packet_destroy( event.packet );
