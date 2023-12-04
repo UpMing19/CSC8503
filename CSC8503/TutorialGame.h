@@ -44,13 +44,13 @@ namespace NCL {
 			void DebugObjectMovement();
 			void LockedObjectMovement();
 
-			GameObject* AddFloorToWorld(const Vector3& position);
-			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
-			GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
+			GameObject* AddFloorToWorld(const Vector3& position,std::string name= "uname");
+			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f,std::string name = "uname");
+			GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f,std::string name= "uname");
 
-			GameObject* AddPlayerToWorld(const Vector3& position);
-			GameObject* AddEnemyToWorld(const Vector3& position);
-			GameObject* AddBonusToWorld(const Vector3& position);
+			GameObject* AddPlayerToWorld(const Vector3& position,std::string name= "uname");
+			GameObject* AddEnemyToWorld(const Vector3& position,std::string name= "uname");
+			GameObject* AddBonusToWorld(const Vector3& position,std::string name= "uname");
 
             StateGameObject * AddStateObjectToWorld ( const Vector3 & position );
             StateGameObject * testStateObject = nullptr ;

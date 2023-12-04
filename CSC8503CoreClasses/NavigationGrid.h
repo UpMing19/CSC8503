@@ -53,6 +53,7 @@ namespace NCL {
 			GridNode* allNodes;
 
             int **grid;
+
 		};
 	}
 }
