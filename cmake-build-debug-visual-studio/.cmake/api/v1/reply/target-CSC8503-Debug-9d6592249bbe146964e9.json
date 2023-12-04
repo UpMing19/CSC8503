@@ -1,0 +1,750 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "C:/CSC8503/x64/Debug/CSC8503.exe"
+		},
+		{
+			"path" : "C:/CSC8503/x64/Debug/CSC8503.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"target_link_libraries",
+			"target_compile_options",
+			"add_compile_definitions",
+			"target_compile_definitions",
+			"include_directories",
+			"target_precompile_headers"
+		],
+		"files" : 
+		[
+			"CSC8503/CMakeLists.txt",
+			"CSC8503CoreClasses/CMakeLists.txt",
+			"OpenGLRendering/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 94,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 201,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 208,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 209,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 210,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 209,
+				"parent" : 6
+			},
+			{
+				"file" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 2,
+				"line" : 84,
+				"parent" : 8
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 176,
+				"parent" : 0
+			},
+			{
+				"file" : 3
+			},
+			{
+				"command" : 3,
+				"file" : 3,
+				"line" : 61,
+				"parent" : 11
+			},
+			{
+				"command" : 3,
+				"file" : 3,
+				"line" : 70,
+				"parent" : 11
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 110,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 204,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 205,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 206,
+				"parent" : 0
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 120,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++latest -MDd"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/permissive-"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/std:c++latest"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/sdl"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/W3"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/Zi"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/EHsc"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/Y-"
+				},
+				{
+					"fragment" : "/YcC:/CSC8503/cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/cmake_pch.hxx /FpC:/CSC8503/cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/./cmake_pch.cxx.pch /FIC:/CSC8503/cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/cmake_pch.hxx"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 12,
+					"define" : "ASSETROOTLOCATION=\"C:/CSC8503/Assets/\""
+				},
+				{
+					"backtrace" : 13,
+					"define" : "NOMINMAX"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "UNICODE"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "WIN32_LEAN_AND_MEAN"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "_UNICODE"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "_WINSOCK2API_"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "_WINSOCKAPI_"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "_WINSOCK_DEPRECATED_NO_WARNINGS"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 15,
+					"path" : "C:/CSC8503/CSC8503/../OpenGLRendering"
+				},
+				{
+					"backtrace" : 16,
+					"path" : "C:/CSC8503/CSC8503/../NCLCoreClasses"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "C:/CSC8503/CSC8503/../CSC8503CoreClasses"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "C:/CSC8503/NCLCoreClasses"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "C:/CSC8503/OpenGLRendering"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "23"
+			},
+			"precompileHeaders" : 
+			[
+				{
+					"backtrace" : 18,
+					"header" : "<vector>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<map>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<stack>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<list>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<set>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<string>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<thread>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<atomic>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<functional>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<iostream>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<chrono>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<sstream>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector2i.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector3i.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector4i.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector2.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector3.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector4.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Quaternion.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Plane.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Matrix2.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Matrix3.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Matrix4.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/GameTimer.h"
+				}
+			],
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++latest -MDd"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/permissive-"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/std:c++latest"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/sdl"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/W3"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/Zi"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/EHsc"
+				},
+				{
+					"backtrace" : 10,
+					"fragment" : "/Y-"
+				},
+				{
+					"fragment" : "/YuC:/CSC8503/cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/cmake_pch.hxx /FpC:/CSC8503/cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/./cmake_pch.cxx.pch /FIC:/CSC8503/cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/cmake_pch.hxx"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 12,
+					"define" : "ASSETROOTLOCATION=\"C:/CSC8503/Assets/\""
+				},
+				{
+					"backtrace" : 13,
+					"define" : "NOMINMAX"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "UNICODE"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "WIN32_LEAN_AND_MEAN"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "_UNICODE"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "_WINSOCK2API_"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "_WINSOCKAPI_"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "_WINSOCK_DEPRECATED_NO_WARNINGS"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 15,
+					"path" : "C:/CSC8503/CSC8503/../OpenGLRendering"
+				},
+				{
+					"backtrace" : 16,
+					"path" : "C:/CSC8503/CSC8503/../NCLCoreClasses"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "C:/CSC8503/CSC8503/../CSC8503CoreClasses"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "C:/CSC8503/NCLCoreClasses"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "C:/CSC8503/OpenGLRendering"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "23"
+			},
+			"precompileHeaders" : 
+			[
+				{
+					"backtrace" : 18,
+					"header" : "<vector>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<map>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<stack>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<list>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<set>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<string>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<thread>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<atomic>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<functional>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<iostream>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<chrono>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "<sstream>"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector2i.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector3i.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector4i.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector2.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector3.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Vector4.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Quaternion.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Plane.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Matrix2.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Matrix3.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/Matrix4.h"
+				},
+				{
+					"backtrace" : 18,
+					"header" : "C:/CSC8503/CSC8503/../NCLCoreClasses/GameTimer.h"
+				}
+			],
+			"sourceIndexes" : 
+			[
+				6,
+				7,
+				8,
+				9,
+				10,
+				11
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "NCLCoreClasses::@d19657c61aeecf4bdae3"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "CSC8503CoreClasses::@4d875e53a28d04205b4e"
+		},
+		{
+			"backtrace" : 5,
+			"id" : "OpenGLRendering::@33dc503a5a1af3fe7d7b"
+		}
+	],
+	"id" : "CSC8503::@6219ac6a3c5e7ef5b3a0",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:console",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "Winmm.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "NCLCoreClasses\\NCLCoreClasses.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "C:\\CSC8503\\x64\\Debug\\CSC8503CoreClasses.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "OpenGLRendering\\OpenGLRendering.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "ws2_32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "NCLCoreClasses\\NCLCoreClasses.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 9,
+				"fragment" : "opengl32.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "CSC8503",
+	"nameOnDisk" : "CSC8503.exe",
+	"paths" : 
+	{
+		"build" : "CSC8503",
+		"source" : "CSC8503"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				1,
+				2,
+				3,
+				4,
+				5
+			]
+		},
+		{
+			"name" : "Precompile Header File",
+			"sourceIndexes" : 
+			[
+				12
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"path" : "cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/cmake_pch.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "CSC8503/GameTechRenderer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "CSC8503/NetworkedGame.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "CSC8503/NetworkPlayer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "CSC8503/StateGameObject.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "CSC8503/TutorialGame.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "CSC8503/GameTechRenderer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "CSC8503/Main.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "CSC8503/NetworkedGame.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "CSC8503/NetworkPlayer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "CSC8503/StateGameObject.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "CSC8503/TutorialGame.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"path" : "cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/cmake_pch.hxx",
+			"sourceGroupIndex" : 2
+		}
+	],
+	"type" : "EXECUTABLE"
+}
