@@ -6,7 +6,7 @@
 #include "GameTechVulkanRenderer.h"
 #endif
 #include "PhysicsSystem.h"
-
+#include "NavigationGrid.h"
 #include "StateGameObject.h"
 
 namespace NCL {
@@ -57,6 +57,7 @@ namespace NCL {
 
 
             void BridgeConstraintTest();
+            void InitMazeWorld();
 
 #ifdef USEVULKAN
 			GameTechVulkanRenderer*	renderer;
@@ -95,6 +96,9 @@ namespace NCL {
 			}
 
 			GameObject* objClosest = nullptr;
+
+            NavigationGrid *grid;
+
 		};
 	}
 }

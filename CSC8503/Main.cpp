@@ -365,6 +365,7 @@ int main() {
     w->ShowOSPointer(false);
     w->LockMouseToWindow(true);
     //TestPathfinding();
+
     TutorialGame *g = new TutorialGame();
     w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
     while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {

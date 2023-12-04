@@ -39,7 +39,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	controller.MapAxis(4, "YLook");
 
 	InitialiseAssets();
-    BridgeConstraintTest();
+   // BridgeConstraintTest();
 }
 
 /*
@@ -130,7 +130,8 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
-
+    Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Vector4(0, 1, 0, 1));
+    Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
 	SelectObject();
 	MoveSelectedObject();
 
@@ -138,10 +139,10 @@ void TutorialGame::UpdateGame(float dt) {
 	renderer->Update(dt);
 	physics->Update(dt);
 
-    if ( testStateObject ) {
-        //std::cout<<"debug"<<std::endl;
-         testStateObject -> Update ( dt );
-    }
+//    if ( testStateObject ) {
+//        //std::cout<<"debug"<<std::endl;
+//         testStateObject -> Update ( dt );
+//    }
 
 
     renderer->Render();
@@ -256,7 +257,7 @@ void TutorialGame::DebugObjectMovement() {
 
 void TutorialGame::InitCamera() {
 	world->GetMainCamera().SetNearPlane(0.1f);
-	world->GetMainCamera().SetFarPlane(500.0f);
+	world->GetMainCamera().SetFarPlane(5000.0f);
 	world->GetMainCamera().SetPitch(-15.0f);
 	world->GetMainCamera().SetYaw(315.0f);
 	world->GetMainCamera().SetPosition(Vector3(-60, 40, 60));
@@ -267,12 +268,13 @@ void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
 
-    testStateObject = AddStateObjectToWorld ( Vector3 (0 , 10 ,0));
+   // testStateObject = AddStateObjectToWorld ( Vector3 (0 , 10 ,0));
 
    // InitMixedGridWorld(15, 15, 3.5f, 3.5f);
 
-	InitGameExamples();
+	//InitGameExamples();
 	InitDefaultFloor();
+    InitMazeWorld();
 }
 
 /*
@@ -420,7 +422,7 @@ GameObject* TutorialGame::AddBonusToWorld(const Vector3& position) {
 }
 
 void TutorialGame::InitDefaultFloor() {
-	AddFloorToWorld(Vector3(0, -20, 0));
+	AddFloorToWorld(Vector3(200, -20, 200));
 }
 
 void TutorialGame::InitGameExamples() {
@@ -600,5 +602,24 @@ StateGameObject * TutorialGame::AddStateObjectToWorld ( const Vector3 & position
     world->AddGameObject(cube);
 
     return cube;
+}
+
+void TutorialGame::InitMazeWorld() {
+
+    if(grid == nullptr) {
+        grid = new NavigationGrid("TestGrid1.txt");
+    }
+
+    int **gridSquare = grid->GetGrid();
+    int size = grid->GetSize();
+
+    for (int y = 0; y < grid->GetHeight(); y++) {
+        for (int x = 0; x < grid->GetWidth(); x++) {
+            if (gridSquare[y][x] == 120) {
+                AddCubeToWorld(Vector3(x * size, -10, y * size), Vector3(size / 2, size /2 , size / 2), 0.0f);
+            }
+        }
+    }
+
 }
 
