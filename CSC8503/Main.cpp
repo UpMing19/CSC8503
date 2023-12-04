@@ -355,7 +355,7 @@ int main() {
 
     //TestBehaviourTree();
     //TestStateMachine();
-    TestNetworking();
+    //TestNetworking();
     Window *w = Window::CreateGameWindow("CSC8503 Game technology!", 1280, 720);
     //TestPushdownAutomata(w);
     if (!w->HasInitialised()) {
@@ -364,7 +364,7 @@ int main() {
 
     w->ShowOSPointer(false);
     w->LockMouseToWindow(true);
-    TestPathfinding();
+    //TestPathfinding();
     TutorialGame *g = new TutorialGame();
     w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
     while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
@@ -389,7 +389,7 @@ int main() {
 
         g->UpdateGame(dt);
 
-        DisplayPathfinding();
+        //DisplayPathfinding();
     }
 
     Window::DestroyGameWindow();
