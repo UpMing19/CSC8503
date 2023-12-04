@@ -18,19 +18,21 @@ namespace NCL {
 
 			virtual void UpdateGame(float dt);
 
-		protected:
+            void InitMenu();
+
+            void InitWorld();
+
+        protected:
 			void InitialiseAssets();
 
 			void InitCamera();
 			void UpdateKeys();
 
-			void InitWorld();
-
-			/*
-			These are some of the world/object creation functions I created when testing the functionality
-			in the module. Feel free to mess around with them to see different objects being created in different
-			test scenarios (constraints, collision types, and so on). 
-			*/
+            /*
+            These are some of the world/object creation functions I created when testing the functionality
+            in the module. Feel free to mess around with them to see different objects being created in different
+            test scenarios (constraints, collision types, and so on).
+            */
 			void InitGameExamples();
 
 			void InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius);
@@ -99,6 +101,7 @@ namespace NCL {
 
             NavigationGrid *grid;
 
+            bool menu;
 		};
 	}
 }

@@ -29,6 +29,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	useGravity		= false;
 	inSelectionMode = false;
 
+
 	world->GetMainCamera().SetController(controller);
 
 	controller.MapAxis(0, "Sidestep");
@@ -80,6 +81,22 @@ TutorialGame::~TutorialGame()	{
 }
 
 void TutorialGame::UpdateGame(float dt) {
+
+    if(menu){
+        world->GetMainCamera().SetPosition(Vector3(0, 0, 0));
+        Debug::Print("1. Start Game ", Vector2(30, 40), Debug::GREEN);
+        Debug::Print("Exit - Press ESC", Vector2(30, 50), Debug::GREEN);
+        physics->Update(dt);
+
+
+        world->UpdateWorld(dt);
+        renderer->Update(dt);
+        renderer->Render();
+
+        Debug::UpdateRenderables(dt);
+        return ;
+    }
+
 	if (!inSelectionMode) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
@@ -268,6 +285,7 @@ void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
 
+    menu = false;
    // testStateObject = AddStateObjectToWorld ( Vector3 (0 , 10 ,0));
 
    // InitMixedGridWorld(15, 15, 3.5f, 3.5f);
@@ -621,5 +639,9 @@ void TutorialGame::InitMazeWorld() {
         }
     }
 
+}
+
+void TutorialGame::InitMenu() {
+    menu = true;
 }
 

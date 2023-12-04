@@ -5,6 +5,7 @@
 #include "StateMachine.h"
 #include "StateTransition.h"
 #include "State.h"
+#include "MenuStates.h"
 
 #include "GameServer.h"
 #include "GameClient.h"
@@ -367,6 +368,8 @@ int main() {
     //TestPathfinding();
 
     TutorialGame *g = new TutorialGame();
+    PushdownMachine *menuState = new PushdownMachine( new MenuState(g));
+
     w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
     while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
         float dt = w->GetTimer().GetTimeDeltaSeconds();
@@ -389,7 +392,7 @@ int main() {
         w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
 
         g->UpdateGame(dt);
-
+        menuState->Update(dt);
         //DisplayPathfinding();
     }
 
