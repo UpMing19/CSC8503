@@ -247,22 +247,29 @@ void TutorialGame::LockedObjectMovement() {
         selectionObject->GetPhysicsObject()->AddForce(Vector3(0, 1, 0) * 16.0f * 50.0f);
     }
 
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
-        selectionObject->GetPhysicsObject()->AddForce(fwdAxis * 18);
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+        selectionObject->GetPhysicsObject()->AddForce(Vector3(10,0,0));
+    }
+
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
+        selectionObject->GetPhysicsObject()->AddForce(Vector3(-10,0,0));
+    }
+
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
+        selectionObject->GetPhysicsObject()->AddForce(Vector3(0,0,10));
+    }
+
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
+        selectionObject->GetPhysicsObject()->AddForce(Vector3(0,0,-10));
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
-        selectionObject->GetPhysicsObject()->AddForce(fwdAxis * -18);
-    }
-
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
-        selectionObject->GetPhysicsObject()->AddForce(rightAxis * -18);
+        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0,1,0));
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
-        selectionObject->GetPhysicsObject()->AddForce(rightAxis * 18);
+        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0,-1,0));
     }
-
 
 
 }
