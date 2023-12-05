@@ -244,21 +244,17 @@ void TutorialGame::LockedObjectMovement() {
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-        // 假设GetOrientation()返回猪当前的朝向，是一个四元数
         Quaternion pigOrientation = selectionObject->GetPhysicsObject()->GetTransForm()->GetOrientation();
 
-        // 假设猪的前进方向是局部坐标系的Z轴负方向
         Vector3 forwardDirection = pigOrientation * Vector3(0, 0, -1);
 
-        // 标准化前进方向
         forwardDirection.Normalise();
 
-        // 应用力，使猪朝前方向移动，这里的数值你可能需要根据实际情况调整
         float forceMagnitude = 30.0f;
         selectionObject->GetPhysicsObject()->AddForce(forwardDirection * forceMagnitude);
     }
 
-    // UP已经在您的代码中实现了，它会使猪朝向前方移动。
+
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
         Quaternion pigOrientation = selectionObject->GetPhysicsObject()->GetTransForm()->GetOrientation();
