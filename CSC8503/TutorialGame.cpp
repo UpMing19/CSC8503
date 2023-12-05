@@ -244,27 +244,54 @@ void TutorialGame::LockedObjectMovement() {
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-        selectionObject->GetPhysicsObject()->AddForce(Vector3(10, 0, 0));
+        // 假设GetOrientation()返回猪当前的朝向，是一个四元数
+        Quaternion pigOrientation = selectionObject->GetPhysicsObject()->GetTransForm()->GetOrientation();
+
+        // 假设猪的前进方向是局部坐标系的Z轴负方向
+        Vector3 forwardDirection = pigOrientation * Vector3(0, 0, -1);
+
+        // 标准化前进方向
+        forwardDirection.Normalise();
+
+        // 应用力，使猪朝前方向移动，这里的数值你可能需要根据实际情况调整
+        float forceMagnitude = 30.0f;
+        selectionObject->GetPhysicsObject()->AddForce(forwardDirection * forceMagnitude);
     }
 
+    // UP已经在您的代码中实现了，它会使猪朝向前方移动。
+
     if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-        selectionObject->GetPhysicsObject()->AddForce(Vector3(-10, 0, 0));
+        Quaternion pigOrientation = selectionObject->GetPhysicsObject()->GetTransForm()->GetOrientation();
+        Vector3 backwardDirection = pigOrientation * Vector3(0, 0, 1);
+        backwardDirection.Normalise();
+
+        float forceMagnitude = 30.0f;
+        selectionObject->GetPhysicsObject()->AddForce(backwardDirection * forceMagnitude);
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
-        selectionObject->GetPhysicsObject()->AddForce(Vector3(0, 0, 10));
+        Quaternion pigOrientation = selectionObject->GetPhysicsObject()->GetTransForm()->GetOrientation();
+        Vector3 leftDirection = pigOrientation * Vector3(-1, 0, 0);
+        leftDirection.Normalise();
+        float forceMagnitude = 30.0f;
+        selectionObject->GetPhysicsObject()->AddForce(leftDirection * forceMagnitude);
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
-        selectionObject->GetPhysicsObject()->AddForce(Vector3(0, 0, -10));
+        Quaternion pigOrientation = selectionObject->GetPhysicsObject()->GetTransForm()->GetOrientation();
+        Vector3 rightDirection = pigOrientation * Vector3(1, 0, 0);
+        rightDirection.Normalise();
+        float forceMagnitude = 30.0f;
+        selectionObject->GetPhysicsObject()->AddForce(rightDirection * forceMagnitude);
     }
 
+
     if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
-        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 1, 0));
+        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 8, 0));
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
-        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -1, 0));
+        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -8, 0));
     }
 
 
