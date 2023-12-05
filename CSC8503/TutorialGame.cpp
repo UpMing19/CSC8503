@@ -97,7 +97,9 @@ void TutorialGame::UpdateGame(float dt) {
         Debug::UpdateRenderables(dt);
         return ;
     }
-
+  //  std::cout<<world->GetMainCamera().GetPosition()<<std::endl;
+  //  std::cout<<world->GetMainCamera().GetPitch()<<std::endl;
+ //   std::cout<<world->GetMainCamera().GetYaw()<<std::endl;
 	if (!inSelectionMode) {
 		world->GetMainCamera().UpdateCamera(dt);
 	}
@@ -172,6 +174,7 @@ void TutorialGame::UpdateGame(float dt) {
 	SelectObject();
 	MoveSelectedObject();
 
+
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
@@ -227,6 +230,7 @@ void TutorialGame::UpdateKeys() {
 }
 
 void TutorialGame::LockedObjectMovement() {
+
 	Matrix4 view		= world->GetMainCamera().BuildViewMatrix();
 	Matrix4 camWorld	= view.Inverse();
 
@@ -239,20 +243,23 @@ void TutorialGame::LockedObjectMovement() {
 	Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE) && selectionObject->GetName()=="player"){
+        selectionObject->GetPhysicsObject()->AddForce(Vector3(0, 1, 0) * 16.0f * 50.0f);
+    }
 
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
         selectionObject->GetPhysicsObject()->AddForce(fwdAxis * 18);
     }
 
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
         selectionObject->GetPhysicsObject()->AddForce(fwdAxis * -18);
     }
 
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
         selectionObject->GetPhysicsObject()->AddForce(rightAxis * -18);
     }
 
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
         selectionObject->GetPhysicsObject()->AddForce(rightAxis * 18);
     }
 
@@ -301,9 +308,9 @@ void TutorialGame::DebugObjectMovement() {
 void TutorialGame::InitCamera() {
 	world->GetMainCamera().SetNearPlane(0.1f);
 	world->GetMainCamera().SetFarPlane(5000.0f);
-	world->GetMainCamera().SetPitch(-15.0f);
-	world->GetMainCamera().SetYaw(315.0f);
-	world->GetMainCamera().SetPosition(Vector3(-60, 40, 60));
+	world->GetMainCamera().SetPitch(-45);
+	world->GetMainCamera().SetYaw(180.0f);
+	world->GetMainCamera().SetPosition(Vector3(20, 190, -90));
 
 	lockedObject = nullptr;
 }
@@ -681,6 +688,7 @@ void TutorialGame::InitMazeWorld() {
 }
 
 void TutorialGame::InitMenu() {
+
     menu = true;
 }
 

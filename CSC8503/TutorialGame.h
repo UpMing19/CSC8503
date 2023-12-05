@@ -23,11 +23,12 @@ namespace NCL {
 
             void InitWorld();
 
+            void InitCamera();
+
         protected:
 			void InitialiseAssets();
 
-			void InitCamera();
-			void UpdateKeys();
+            void UpdateKeys();
 
             /*
             These are some of the world/object creation functions I created when testing the functionality
@@ -107,7 +108,7 @@ namespace NCL {
 
             float gameCurrentTime =0 ;
             float gameTime = 300.0f;
-            GameObject *player;
+            GamePlayerObject *player;
 
 
 		};
