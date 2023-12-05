@@ -121,11 +121,6 @@ void TutorialGame::UpdateGame(float dt) {
 
     UpdateKeys();
 
-    if (useGravity) {
-        Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
-    } else {
-        Debug::Print("(G)ravity off", Vector2(5, 95), Debug::RED);
-    }
 
     RayCollision closestCollision;
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::K) && selectionObject) {
@@ -152,7 +147,10 @@ void TutorialGame::UpdateGame(float dt) {
     Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Vector4(0, 1, 0, 1));
     Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
 
-    {
+
+    if (player->score == 20) player->win = true;
+
+    if (!player->win && !player->lose){
         gameCurrentTime -= dt;
         int minutes = floor(gameCurrentTime / 60.0f);
         int seconds = std::round(std::fmod(gameCurrentTime, 60.0f));
@@ -162,29 +160,41 @@ void TutorialGame::UpdateGame(float dt) {
         Debug::Print(time, Vector2(90 - time.length(), 5), timerColor);
         if (gameCurrentTime <= 0.0f) {
             gameCurrentTime = 0.0f;
-            EndGame();
+            player->lose = true;
         }
 
-        std::string score = "Score = "+ std::to_string(player->score);
-        Debug::Print(time, Vector2(90 - time.length(), 5), timerColor);
+        std::string score = "Score = " + std::to_string(player->score);
+        Debug::Print(score, Vector2(90 - time.length(), 10), timerColor);
 
-        std::string itemsHasGet = "ItemsHasGot = "+ std::to_string(player->itemsHasGet);
-        Debug::Print(itemsHasGet, Vector2(90 - time.length()-10, 10), timerColor);
+        std::string itemsHasGet = "ItemsHasGot = " + std::to_string(player->itemsHasGet);
+        Debug::Print(itemsHasGet, Vector2(90 - time.length() - 10, 15), timerColor);
 
-        std::string itemsLeft = "ItemsLeft = "+ std::to_string(player->itemsLeft);
-        Debug::Print(itemsLeft, Vector2(90 - time.length()-10, 15), timerColor);
+        std::string itemsLeft = "ItemsLeft = " + std::to_string(player->itemsLeft);
+        Debug::Print(itemsLeft, Vector2(90 - time.length() - 10, 20), timerColor);
 
 
     }
 
+
+
     if (player->win || player->lose) {
+        world->UpdateWorld(dt);
+        renderer->Update(dt);
+        physics->Update(dt);
         EndGame();
+        renderer->Render();
+        return;
     }
 
 
     SelectObject();
     MoveSelectedObject();
 
+    if (useGravity) {
+        Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
+    } else {
+        Debug::Print("(G)ravity off", Vector2(5, 95), Debug::RED);
+    }
 
     world->UpdateWorld(dt);
     renderer->Update(dt);
@@ -431,7 +441,10 @@ GameObject *TutorialGame::AddSphereToWorld(const Vector3 &position, float radius
 
     return sphere;
 }
-GameObject *TutorialGame::AddSphereToWorldWithColor(const Vector3 &position, float radius, float inverseMass, std::string name,Vector4 color) {
+
+GameObject *
+TutorialGame::AddSphereToWorldWithColor(const Vector3 &position, float radius, float inverseMass, std::string name,
+                                        Vector4 color) {
     GameObject *sphere = new GameObject(name);
 
     Vector3 sphereSize = Vector3(radius, radius, radius);
@@ -453,6 +466,7 @@ GameObject *TutorialGame::AddSphereToWorldWithColor(const Vector3 &position, flo
 
     return sphere;
 }
+
 GameObject *
 TutorialGame::AddCubeToWorld(const Vector3 &position, Vector3 dimensions, float inverseMass, std::string name) {
     GameObject *cube = new GameObject(name);
@@ -788,30 +802,32 @@ void TutorialGame::InitGamePlayerObject() {
 }
 
 void TutorialGame::InitGameToolsObject() {
-    AddSphereToWorldWithColor(Vector3(40,20,30),1,10,"sphereTools",Vector4(1, 1, 0, 1));
-    AddSphereToWorldWithColor(Vector3(50,20,30),1,10,"sphereTools",Vector4(1, 1, 0, 1));
-    AddSphereToWorldWithColor(Vector3(50,20,50),1,10,"sphereTools",Vector4(1, 1, 0, 1));
+    AddSphereToWorldWithColor(Vector3(40, 20, 30), 1, 10, "sphereTools", Vector4(1, 1, 0, 1));
+    AddSphereToWorldWithColor(Vector3(50, 20, 30), 1, 10, "sphereTools", Vector4(1, 1, 0, 1));
+    AddSphereToWorldWithColor(Vector3(50, 20, 50), 1, 10, "sphereTools", Vector4(1, 1, 0, 1));
 }
 
 void TutorialGame::EndGame() {
 
+    world->GetMainCamera().SetPosition(Vector3(0, 0, 0));
+
     std::string score = "Score = ";
     score.append(std::to_string(player->score));
     score.append(";");
-    Debug::Print(score, Vector2(30, 80));
+    Debug::Print(score, Vector2(30, 50));
 
 
     std::string itemLeft = "itemLeft = ";
-    score.append(std::to_string(player->itemsLeft));
-    score.append(";");
-    Debug::Print(itemLeft, Vector2(30, 70));
+    itemLeft.append(std::to_string(player->itemsLeft));
+    itemLeft.append(";");
+    Debug::Print(itemLeft, Vector2(30, 60));
 
     std::string text = "Play Again(F3);";
 
-    Debug::Print(text, Vector2(30, 60));
+    Debug::Print(text, Vector2(30, 70));
 
     text = "Exit(ESC);";
-    Debug::Print(text, Vector2(30, 50));
+    Debug::Print(text, Vector2(30, 80));
 
 }
 
