@@ -102,6 +102,10 @@ namespace NCL {
             NavigationGrid *grid;
 
             bool menu;
+
+            float gameCurrentTime =0 ;
+            float gameTime = 300.0f;
+
 		};
 	}
 }

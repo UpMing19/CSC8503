@@ -29,6 +29,7 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 	useGravity		= false;
 	inSelectionMode = false;
 
+    gameCurrentTime = gameTime;
 
 	world->GetMainCamera().SetController(controller);
 
@@ -149,6 +150,25 @@ void TutorialGame::UpdateGame(float dt) {
 	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
     Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Vector4(0, 1, 0, 1));
     Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
+
+    {
+        gameCurrentTime-=dt;
+        int minutes = floor(gameCurrentTime / 60.0f);
+        int seconds = std::round(std::fmod(gameCurrentTime, 60.0f));
+        if(seconds==60) seconds=0,minutes++;
+        Vector4 timerColor = gameCurrentTime <= 20.0f ? Debug::RED : Debug::YELLOW;
+        std::string time = "Time: " + std::to_string(minutes) + ":" + std::to_string(seconds);
+        Debug::Print(time, Vector2(90 - time.length(), 5), timerColor);
+        if (gameCurrentTime <= 0.0f)
+        {
+            gameCurrentTime = 0.0f;
+            //todo EndGame func in TutorialGame.cpp(165);
+           // EndGame();
+        }
+    }
+
+
+
 	SelectObject();
 	MoveSelectedObject();
 
@@ -522,6 +542,17 @@ bool TutorialGame::SelectObject() {
 			if (world->Raycast(ray, closestCollision, true)) {
 				selectionObject = (GameObject*)closestCollision.node;
 
+                {
+                    std::string pos = "Position = ";
+                    pos.append(std::to_string(selectionObject->GetTransform().GetPosition().x));
+                    pos.append(", ");
+                    pos.append(std::to_string(selectionObject->GetTransform().GetPosition().y));
+                    pos.append(", ");
+                    pos.append(std::to_string(selectionObject->GetTransform().GetPosition().z));
+
+                    Debug::Print(pos, Vector2(5, 60));
+                }
+
 				selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
 				return true;
 			}
@@ -625,7 +656,7 @@ StateGameObject * TutorialGame::AddStateObjectToWorld ( const Vector3 & position
 void TutorialGame::InitMazeWorld() {
 
     if(grid == nullptr) {
-        grid = new NavigationGrid("TestGrid1.txt");
+        grid = new NavigationGrid("TestGrid2.txt");
     }
 
     int **gridSquare = grid->GetGrid();
