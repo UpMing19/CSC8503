@@ -240,18 +240,24 @@ void TutorialGame::LockedObjectMovement() {
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
 
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+        selectionObject->GetPhysicsObject()->AddForce(fwdAxis * 18);
+    }
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-		selectionObject->GetPhysicsObject()->AddForce(fwdAxis);
-	}
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
+        selectionObject->GetPhysicsObject()->AddForce(fwdAxis * -18);
+    }
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-		selectionObject->GetPhysicsObject()->AddForce(-fwdAxis);
-	}
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
+        selectionObject->GetPhysicsObject()->AddForce(rightAxis * -18);
+    }
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::NEXT)) {
-		selectionObject->GetPhysicsObject()->AddForce(Vector3(0,-10,0));
-	}
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
+        selectionObject->GetPhysicsObject()->AddForce(rightAxis * 18);
+    }
+
+
+
 }
 
 void TutorialGame::DebugObjectMovement() {
@@ -298,6 +304,7 @@ void TutorialGame::InitCamera() {
 	world->GetMainCamera().SetPitch(-15.0f);
 	world->GetMainCamera().SetYaw(315.0f);
 	world->GetMainCamera().SetPosition(Vector3(-60, 40, 60));
+
 	lockedObject = nullptr;
 }
 
