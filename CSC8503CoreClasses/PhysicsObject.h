@@ -55,7 +55,9 @@ namespace NCL {
 			void SetAngularVelocity(const Vector3& v) {
 				angularVelocity = v;
 			}
-
+            Transform*	 GetTransForm(){
+                return transform;
+            }
 			void InitCubeInertia();
 			void InitSphereInertia();
 

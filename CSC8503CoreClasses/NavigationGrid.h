@@ -36,7 +36,12 @@ namespace NCL {
 			~NavigationGrid();
 
 			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) override;
-				
+
+            int** GetGrid() { return grid; }
+            int GetWidth() { return gridWidth; }
+            int GetHeight() { return gridHeight; }
+            int GetSize() { return nodeSize; }
+
 		protected:
 			bool		NodeInList(GridNode* n, std::vector<GridNode*>& list) const;
 			GridNode*	RemoveBestNode(std::vector<GridNode*>& list) const;
@@ -46,6 +51,9 @@ namespace NCL {
 			int gridHeight;
 
 			GridNode* allNodes;
+
+            int **grid;
+
 		};
 	}
 }

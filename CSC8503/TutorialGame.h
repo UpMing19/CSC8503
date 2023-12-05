@@ -6,8 +6,9 @@
 #include "GameTechVulkanRenderer.h"
 #endif
 #include "PhysicsSystem.h"
-
+#include "NavigationGrid.h"
 #include "StateGameObject.h"
+#include "GamePlayerObject.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -18,19 +19,22 @@ namespace NCL {
 
 			virtual void UpdateGame(float dt);
 
-		protected:
+            void InitMenu();
+
+            void InitWorld();
+
+            void InitCamera();
+
+        protected:
 			void InitialiseAssets();
 
-			void InitCamera();
-			void UpdateKeys();
+            void UpdateKeys();
 
-			void InitWorld();
-
-			/*
-			These are some of the world/object creation functions I created when testing the functionality
-			in the module. Feel free to mess around with them to see different objects being created in different
-			test scenarios (constraints, collision types, and so on). 
-			*/
+            /*
+            These are some of the world/object creation functions I created when testing the functionality
+            in the module. Feel free to mess around with them to see different objects being created in different
+            test scenarios (constraints, collision types, and so on).
+            */
 			void InitGameExamples();
 
 			void InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius);
@@ -44,19 +48,21 @@ namespace NCL {
 			void DebugObjectMovement();
 			void LockedObjectMovement();
 
-			GameObject* AddFloorToWorld(const Vector3& position);
-			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
-			GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
+			GameObject* AddFloorToWorld(const Vector3& position,std::string name= "uname");
+			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f,std::string name = "uname");
+			GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f,std::string name= "uname");
 
-			GameObject* AddPlayerToWorld(const Vector3& position);
-			GameObject* AddEnemyToWorld(const Vector3& position);
-			GameObject* AddBonusToWorld(const Vector3& position);
+			GameObject* AddPlayerToWorld(const Vector3& position,std::string name= "uname");
+			GameObject* AddEnemyToWorld(const Vector3& position,std::string name= "uname");
+			GameObject* AddBonusToWorld(const Vector3& position,std::string name= "uname");
 
             StateGameObject * AddStateObjectToWorld ( const Vector3 & position );
             StateGameObject * testStateObject = nullptr ;
 
 
             void BridgeConstraintTest();
+            void InitMazeWorld();
+            void InitGamePlayerObject();
 
 #ifdef USEVULKAN
 			GameTechVulkanRenderer*	renderer;
@@ -95,6 +101,16 @@ namespace NCL {
 			}
 
 			GameObject* objClosest = nullptr;
+
+            NavigationGrid *grid;
+
+            bool menu;
+
+            float gameCurrentTime =0 ;
+            float gameTime = 300.0f;
+            GamePlayerObject *player;
+
+
 		};
 	}
 }

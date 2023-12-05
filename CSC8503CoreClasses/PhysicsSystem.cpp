@@ -15,6 +15,7 @@ using namespace CSC8503;
 
 PhysicsSystem::PhysicsSystem(GameWorld &g) : gameWorld(g) {
     applyGravity = false;
+    //useBroadPhase = false;
     useBroadPhase = false;
     dTOffset = 0.0f;
     globalDamping = 0.995f;

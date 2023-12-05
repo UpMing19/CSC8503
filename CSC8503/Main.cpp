@@ -5,6 +5,7 @@
 #include "StateMachine.h"
 #include "StateTransition.h"
 #include "State.h"
+#include "MenuStates.h"
 
 #include "GameServer.h"
 #include "GameClient.h"
@@ -355,7 +356,7 @@ int main() {
 
     //TestBehaviourTree();
     //TestStateMachine();
-    TestNetworking();
+    //TestNetworking();
     Window *w = Window::CreateGameWindow("CSC8503 Game technology!", 1280, 720);
     //TestPushdownAutomata(w);
     if (!w->HasInitialised()) {
@@ -364,8 +365,11 @@ int main() {
 
     w->ShowOSPointer(false);
     w->LockMouseToWindow(true);
-    TestPathfinding();
+    //TestPathfinding();
+
     TutorialGame *g = new TutorialGame();
+    PushdownMachine *menuState = new PushdownMachine( new MenuState(g));
+
     w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
     while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
         float dt = w->GetTimer().GetTimeDeltaSeconds();
@@ -388,8 +392,8 @@ int main() {
         w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
 
         g->UpdateGame(dt);
-
-        DisplayPathfinding();
+        menuState->Update(dt);
+        //DisplayPathfinding();
     }
 
     Window::DestroyGameWindow();
