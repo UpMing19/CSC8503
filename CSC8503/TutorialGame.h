@@ -63,6 +63,7 @@ namespace NCL {
             void BridgeConstraintTest();
             void InitMazeWorld();
             void InitGamePlayerObject();
+            void EndGame();
 
 #ifdef USEVULKAN
 			GameTechVulkanRenderer*	renderer;

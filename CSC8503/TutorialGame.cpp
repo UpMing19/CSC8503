@@ -162,9 +162,12 @@ void TutorialGame::UpdateGame(float dt) {
         Debug::Print(time, Vector2(90 - time.length(), 5), timerColor);
         if (gameCurrentTime <= 0.0f) {
             gameCurrentTime = 0.0f;
-            //todo EndGame func in TutorialGame.cpp(165);
-            // EndGame();
+            EndGame();
         }
+    }
+
+    if (player->win || player->lose) {
+        EndGame();
     }
 
 
@@ -253,7 +256,6 @@ void TutorialGame::LockedObjectMovement() {
         float forceMagnitude = 30.0f;
         selectionObject->GetPhysicsObject()->AddForce(forwardDirection * forceMagnitude);
     }
-
 
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
@@ -438,7 +440,7 @@ GameObject *TutorialGame::AddPlayerToWorld(const Vector3 &position, std::string 
     float meshSize = 1.0f;
     float inverseMass = 0.5f;
 
-    GameObject *character = new GameObject("Player");
+    GameObject *character = new GameObject(name);
     SphereVolume *volume = new SphereVolume(1.0f);
 
     character->SetBoundingVolume((CollisionVolume *) volume);
@@ -462,7 +464,7 @@ GameObject *TutorialGame::AddEnemyToWorld(const Vector3 &position, std::string n
     float meshSize = 3.0f;
     float inverseMass = 0.5f;
 
-    GameObject *character = new GameObject("Enemy");
+    GameObject *character = new GameObject(name);
 
     AABBVolume *volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
     character->SetBoundingVolume((CollisionVolume *) volume);
@@ -698,7 +700,7 @@ StateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position) {
 void TutorialGame::InitMazeWorld() {
 
     if (grid == nullptr) {
-        grid = new NavigationGrid("TestGrid2.txt");
+        grid = new NavigationGrid("TestGrid3.txt");
     }
 
     int **gridSquare = grid->GetGrid();
@@ -743,5 +745,27 @@ void TutorialGame::InitGamePlayerObject() {
     player->GetPhysicsObject()->InitSphereInertia();
 
     world->AddGameObject(player);
+
+}
+
+void TutorialGame::EndGame() {
+
+    std::string score = "Score = ";
+    score.append(std::to_string(player->score));
+    score.append(";");
+    Debug::Print(score, Vector2(30, 80));
+
+
+    std::string itemLeft = "itemLeft = ";
+    score.append(std::to_string(player->itemsLeft));
+    score.append(";");
+    Debug::Print(itemLeft, Vector2(30, 70));
+
+    std::string text = "Play Again(F3);";
+
+    Debug::Print(text, Vector2(30, 60));
+
+    text = "Exit(ESC);";
+    Debug::Print(text, Vector2(30, 50));
 
 }
