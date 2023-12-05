@@ -8,6 +8,7 @@
 #include "PhysicsSystem.h"
 #include "NavigationGrid.h"
 #include "StateGameObject.h"
+#include "GamePlayerObject.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -60,6 +61,7 @@ namespace NCL {
 
             void BridgeConstraintTest();
             void InitMazeWorld();
+            void InitGamePlayerObject();
 
 #ifdef USEVULKAN
 			GameTechVulkanRenderer*	renderer;
@@ -105,6 +107,8 @@ namespace NCL {
 
             float gameCurrentTime =0 ;
             float gameTime = 300.0f;
+            GameObject *player;
+
 
 		};
 	}

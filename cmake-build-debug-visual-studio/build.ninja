@@ -1428,6 +1428,15 @@ build CSC8503\CMakeFiles\CSC8503.dir\MenuStates.cpp.obj: CXX_COMPILER__CSC8503_u
   TARGET_COMPILE_PDB = CSC8503\CMakeFiles\CSC8503.dir\
   TARGET_PDB = C:\CSC8503\x64\Debug\CSC8503.pdb
 
+build CSC8503\CMakeFiles\CSC8503.dir\GamePlayerObject.cpp.obj: CXX_COMPILER__CSC8503_unscanned_Debug C$:\CSC8503\CSC8503\GamePlayerObject.cpp | CSC8503\CMakeFiles\CSC8503.dir\cmake_pch.hxx CSC8503\CMakeFiles\CSC8503.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_CSC8503
+  DEFINES = -DASSETROOTLOCATION=\"C:/CSC8503/Assets/\" -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE -D_WINSOCK2API_ -D_WINSOCKAPI_ -D_WINSOCK_DEPRECATED_NO_WARNINGS
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++latest -MDd /permissive- /std:c++latest /sdl /W3 /Zi /EHsc /Y- /YuC:/CSC8503/cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/cmake_pch.hxx /FpC:/CSC8503/cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/./cmake_pch.cxx.pch /FIC:/CSC8503/cmake-build-debug-visual-studio/CSC8503/CMakeFiles/CSC8503.dir/cmake_pch.hxx
+  INCLUDES = -IC:\CSC8503\CSC8503\..\OpenGLRendering -IC:\CSC8503\CSC8503\..\NCLCoreClasses -IC:\CSC8503\CSC8503\..\CSC8503CoreClasses -IC:\CSC8503\NCLCoreClasses -IC:\CSC8503\OpenGLRendering
+  OBJECT_DIR = CSC8503\CMakeFiles\CSC8503.dir
+  OBJECT_FILE_DIR = CSC8503\CMakeFiles\CSC8503.dir
+  TARGET_COMPILE_PDB = CSC8503\CMakeFiles\CSC8503.dir\
+  TARGET_PDB = C:\CSC8503\x64\Debug\CSC8503.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target CSC8503
@@ -1436,7 +1445,7 @@ build CSC8503\CMakeFiles\CSC8503.dir\MenuStates.cpp.obj: CXX_COMPILER__CSC8503_u
 #############################################
 # Link the executable C:\CSC8503\x64\Debug\CSC8503.exe
 
-build C$:\CSC8503\x64\Debug\CSC8503.exe: CXX_EXECUTABLE_LINKER__CSC8503_Debug CSC8503\CMakeFiles\CSC8503.dir\cmake_pch.cxx.obj CSC8503\CMakeFiles\CSC8503.dir\GameTechRenderer.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\Main.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\NetworkedGame.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\NetworkPlayer.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\StateGameObject.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\TutorialGame.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\MenuStates.cpp.obj | NCLCoreClasses\NCLCoreClasses.lib C$:\CSC8503\x64\Debug\CSC8503CoreClasses.lib OpenGLRendering\OpenGLRendering.lib NCLCoreClasses\NCLCoreClasses.lib || C$:\CSC8503\x64\Debug\CSC8503CoreClasses.lib NCLCoreClasses\NCLCoreClasses.lib OpenGLRendering\OpenGLRendering.lib
+build C$:\CSC8503\x64\Debug\CSC8503.exe: CXX_EXECUTABLE_LINKER__CSC8503_Debug CSC8503\CMakeFiles\CSC8503.dir\cmake_pch.cxx.obj CSC8503\CMakeFiles\CSC8503.dir\GameTechRenderer.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\Main.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\NetworkedGame.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\NetworkPlayer.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\StateGameObject.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\TutorialGame.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\MenuStates.cpp.obj CSC8503\CMakeFiles\CSC8503.dir\GamePlayerObject.cpp.obj | NCLCoreClasses\NCLCoreClasses.lib C$:\CSC8503\x64\Debug\CSC8503CoreClasses.lib OpenGLRendering\OpenGLRendering.lib NCLCoreClasses\NCLCoreClasses.lib || C$:\CSC8503\x64\Debug\CSC8503CoreClasses.lib NCLCoreClasses\NCLCoreClasses.lib OpenGLRendering\OpenGLRendering.lib
   FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = Winmm.lib  NCLCoreClasses\NCLCoreClasses.lib  C:\CSC8503\x64\Debug\CSC8503CoreClasses.lib  OpenGLRendering\OpenGLRendering.lib  ws2_32.lib  NCLCoreClasses\NCLCoreClasses.lib  opengl32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib

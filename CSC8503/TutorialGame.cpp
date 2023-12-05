@@ -313,6 +313,7 @@ void TutorialGame::InitWorld() {
 	//InitGameExamples();
 	InitDefaultFloor();
     InitMazeWorld();
+    InitGamePlayerObject();
 }
 
 /*
@@ -676,3 +677,29 @@ void TutorialGame::InitMenu() {
     menu = true;
 }
 
+void TutorialGame::InitGamePlayerObject(){
+
+    float meshSize = 4.0f;
+    float  inverseMass = 0.5f;
+    Vector3 position = Vector3(20,-10,20);
+
+    player = new GamePlayerObject();
+    player->SetName("player");
+
+    SphereVolume* volume = new SphereVolume(4.0f);
+    player->SetBoundingVolume((CollisionVolume*)volume);
+
+    player->GetTransform()
+            .SetScale(Vector3(meshSize, meshSize, meshSize))
+            .SetPosition(position);
+
+
+    player->SetRenderObject(new RenderObject(&player->GetTransform(), charMesh, nullptr, basicShader));
+    player->SetPhysicsObject(new PhysicsObject(&player->GetTransform(), player->GetBoundingVolume()));
+
+    player->GetPhysicsObject()->SetInverseMass(inverseMass);
+    player->GetPhysicsObject()->InitSphereInertia();
+
+    world->AddGameObject(player);
+
+}
