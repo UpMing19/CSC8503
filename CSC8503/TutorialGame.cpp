@@ -204,6 +204,10 @@ void TutorialGame::UpdateGame(float dt) {
         //std::cout<<"debug"<<std::endl;
         testStateObject->Update(dt);
     }
+    if(EnemyObject!=nullptr){
+        EnemyObject->Update(dt);
+    }
+
 
 
     renderer->Render();
@@ -378,6 +382,7 @@ void TutorialGame::InitWorld() {
     InitMazeWorld();
     InitGamePlayerObject();
     InitGameToolsObject();
+    EnemyObject = AddGameEnemyObject(Vector3(100, -10, 150));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
 
 //    AddCubeToWorld(Vector3(20,20,10),Vector3(1,1,1),10,"cubetest");
@@ -829,5 +834,33 @@ void TutorialGame::EndGame() {
     text = "Exit(ESC);";
     Debug::Print(text, Vector2(30, 80));
 
+}
+
+GameEnemyObject* TutorialGame::AddGameEnemyObject(Vector3 position){
+    float meshSize = 7.0f;
+    float inverseMass = 5.0f;
+
+    GameEnemyObject* character = new GameEnemyObject(grid, player);
+
+    character->SetName("EnemyPlayer");
+    AABBVolume* volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
+    character->SetBoundingVolume((CollisionVolume*)volume);
+
+    character->GetTransform()
+            .SetScale(Vector3(meshSize, meshSize, meshSize))
+            .SetPosition(position);
+
+    character->SetRenderObject(new RenderObject(&character->GetTransform(), enemyMesh, nullptr, basicShader));
+    character->GetRenderObject()->SetColour(Vector4(0.75, 0, 0, 1));
+    character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
+
+    character->GetPhysicsObject()->SetInverseMass(inverseMass);
+    character->GetPhysicsObject()->InitSphereInertia();
+
+
+    world->AddGameObject(character);
+    //enemies.emplace_back(character);
+
+    return character;
 }
 
