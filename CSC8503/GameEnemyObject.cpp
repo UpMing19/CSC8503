@@ -16,13 +16,15 @@ std::vector<Vector3> patrolPoints = {
 };
 
 void InitializePatrolPoints() {
-    const int numPoints = 5; // 生成巡逻点的数量
-    const float range = 50.0f; // 巡逻点生成的范围
+    const int numPoints = 10; // 生成巡逻点的数量
+    const float range = 100.0f; // 巡逻点生成的范围
 
     for (int i = 0; i < numPoints; ++i) {
-        float x = (std::rand() / static_cast<float>(RAND_MAX)) * 2 * range - range;
-        float z = (std::rand() / static_cast<float>(RAND_MAX)) * 2 * range - range;
+        float x = (std::rand() / static_cast<float>(RAND_MAX)) * range;
+        float z = (std::rand() / static_cast<float>(RAND_MAX)) * range;
         patrolPoints.push_back(Vector3(x, 0, z)); // 假设巡逻点都在y=0平面上
+        std::cout<<"x :"<<x<<std::endl;
+        std::cout<<"z :"<<x<<std::endl;
     }
 }
 
@@ -39,10 +41,33 @@ GameEnemyObject::GameEnemyObject(NavigationGrid *grid, GamePlayerObject *gameObj
     srand(time(NULL));
 
     InitializePatrolPoints();
+//    State *patrol = new State([&](float dt) -> void {
+//        this->GetPhysicsObject()->ClearForces();
+//        this->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
+//    });
+
     State *patrol = new State([&](float dt) -> void {
-        this->GetPhysicsObject()->ClearForces();
-        this->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
+        auto physObject = this->GetPhysicsObject();
+        auto transform = this->GetTransform();
+
+        // 判断是否达到当前目标点
+        Vector3 currentPos = transform.GetPosition();
+        Vector3 targetPos = patrolPoints[currentPatrolIndex];
+        if ((targetPos - currentPos).LengthSquared() < 1.0f) { // 使用LengthSquared来避免开方操作，提高性能
+            // 当到达目标点时，随机选择下一个巡逻点
+            currentPatrolIndex = rand() % patrolPoints.size(); // 获取一个随机的路线点索引
+            targetPos = patrolPoints[currentPatrolIndex]; // 更新目标点
+        }
+
+        // 计算从当前位置到目标位置的方向
+        Vector3 direction = (targetPos - currentPos).Normalised();
+
+        // 设置物理对象的速度朝向目标点
+        float patrolSpeed = 50.0f; // 根据需要调整巡逻速度
+        physObject->SetLinearVelocity(direction * patrolSpeed);
+
     });
+
 
 
     State *chase = new State([&](float dt) -> void {
@@ -91,7 +116,7 @@ void GameEnemyObject::MoveToTarget(float dt) {
         Vector3 target = *it;
         Vector3 dir = (target - this->GetTransform().GetPosition());
         dir = Vector3(dir.x, 0, dir.z);
-        GetPhysicsObject()->SetLinearVelocity(dir.Normalised() * 1000.0f * dt);
+        GetPhysicsObject()->SetLinearVelocity(dir.Normalised() * 500.0f * dt);
 
         if (dir.Length() <= 2.0f) {
             pathToTarget.erase(it);
