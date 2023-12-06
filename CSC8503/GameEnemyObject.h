@@ -9,12 +9,13 @@
 #include "State.h"
 #include "StateMachine.h"
 #include "NavigationGrid.h"
+#include "GamePlayerObject.h"
 
 namespace NCL {
     namespace CSC8503 {
         class GameEnemyObject : public GameObject {
         public:
-            GameEnemyObject(NavigationGrid *grid, GameObject *target);
+            GameEnemyObject(NavigationGrid *grid, GamePlayerObject *target);
 
             ~GameEnemyObject();
 
@@ -22,7 +23,7 @@ namespace NCL {
                 return target;
             }
 
-            void SetTarget(GameObject *object) {
+            void SetTarget(GamePlayerObject *object) {
                 target = object;
             }
 
@@ -35,7 +36,7 @@ namespace NCL {
             virtual void Update(float dt);
 
 
-            GameObject *target; //todo PlayerObject?
+            GamePlayerObject *target; //todo PlayerObject?
             NavigationGrid *grid;
             std::vector<Vector3> pathToTarget;
             float counter;

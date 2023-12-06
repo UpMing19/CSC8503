@@ -204,6 +204,10 @@ void TutorialGame::UpdateGame(float dt) {
         //std::cout<<"debug"<<std::endl;
         testStateObject->Update(dt);
     }
+    if(EnemyObject!=nullptr){
+        EnemyObject->Update(dt);
+    }
+
 
 
     renderer->Render();

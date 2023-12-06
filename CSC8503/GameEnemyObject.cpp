@@ -5,56 +5,65 @@
 #include "StateMachine.h"
 #include "State.h"
 #include "NavigationGrid.h"
+#include "GamePlayerObject.h"
+#include <cstdlib>
 
 using namespace NCL;
 using namespace CSC8503;
 
-GameEnemyObject::GameEnemyObject(NavigationGrid *grid, GameObject *gameObject) {
+std::vector<Vector3> patrolPoints = {
+
+};
+
+void InitializePatrolPoints() {
+    const int numPoints = 5; // 生成巡逻点的数量
+    const float range = 50.0f; // 巡逻点生成的范围
+
+    for (int i = 0; i < numPoints; ++i) {
+        float x = (std::rand() / static_cast<float>(RAND_MAX)) * 2 * range - range;
+        float z = (std::rand() / static_cast<float>(RAND_MAX)) * 2 * range - range;
+        patrolPoints.push_back(Vector3(x, 0, z)); // 假设巡逻点都在y=0平面上
+    }
+}
+
+// 当前目标巡逻点的索引
+int currentPatrolIndex = 0;
+
+GameEnemyObject::GameEnemyObject(NavigationGrid *grid, GamePlayerObject *gameObject) {
 
     this->grid = grid;
     this->target = gameObject;
     this->stateMachine = new StateMachine();
     counter = 20.0f;
 
+    srand(time(NULL));
+
+    InitializePatrolPoints();
     State *patrol = new State([&](float dt) -> void {
-        Vector3 currentPosition = this->GetTransform().GetPosition();
-
-        // Generate random target position within a certain range
-        float minX = -10.0f;  // Minimum x-coordinate of patrol area
-        float maxX = 10.0f;   // Maximum x-coordinate of patrol area
-        float minZ = -10.0f;  // Minimum z-coordinate of patrol area
-        float maxZ = 10.0f;   // Maximum z-coordinate of patrol area
-
-        float targetX = minX + static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX / (maxX - minX));
-        float targetZ = minZ + static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX / (maxZ - minZ));
-
-        Vector3 targetPosition(targetX, currentPosition.y, targetZ);
-
-        // Calculate direction towards the target position
-        Vector3 direction = targetPosition - currentPosition;
-        direction.Normalised();
-
-        // Set linear velocity to move towards the target position
-        float patrolSpeed = 5.0f;  // Speed of patrol movement
-        this->GetPhysicsObject()->SetLinearVelocity(direction * patrolSpeed);
+        this->GetPhysicsObject()->ClearForces();
+        this->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
     });
+
 
     State *chase = new State([&](float dt) -> void {
                                  this->MoveToTarget(dt);
                              }
     );
+
     stateMachine->AddState(patrol);
     stateMachine->AddState(chase);
 
     stateMachine->AddTransition(new StateTransition(patrol, chase, [&]() -> bool {
         if (this->GetTarget()) {
-            return (this->GetTarget()->GetTransform().GetPosition() - this->GetTransform().GetPosition()).Length() <= 25.0f;
+            return (this->GetTarget()->GetTransform().GetPosition() - this->GetTransform().GetPosition()).Length() <=
+                   45.0f;
         }
     }));
 
     stateMachine->AddTransition(new StateTransition(chase, patrol, [&]() -> bool {
         if (this->GetTarget()) {
-            return (this->GetTarget()->GetTransform().GetPosition() - this->GetTransform().GetPosition()).Length() >= 25.0f;
+            return (this->GetTarget()->GetTransform().GetPosition() - this->GetTransform().GetPosition()).Length() >
+                   65.0f;
         }
     }));
 
@@ -76,6 +85,7 @@ void GameEnemyObject::Update(float dt) {
 
 
 void GameEnemyObject::MoveToTarget(float dt) {
+
     if (pathToTarget.size() > 0) {
         auto it = pathToTarget.begin();
         Vector3 target = *it;
@@ -93,7 +103,7 @@ void GameEnemyObject::MoveToTarget(float dt) {
 void GameEnemyObject::CalculatePath() {
     pathToTarget.clear();
     NavigationPath outPath;
-    if (target == nullptr)return;
+    if (target == nullptr) return;
     bool found = grid->FindPath(GetTransform().GetPosition(), target->GetTransform().GetPosition(), outPath);
     Vector3 pos;
     while (outPath.PopWaypoint(pos)) {
