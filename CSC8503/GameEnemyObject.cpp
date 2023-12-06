@@ -20,9 +20,9 @@ void InitializePatrolPoints() {
     const float range = 100.0f; // 巡逻点生成的范围
 
     for (int i = 0; i < numPoints; ++i) {
-        float x = (std::rand() / static_cast<float>(RAND_MAX)) * range;
-        float z = (std::rand() / static_cast<float>(RAND_MAX)) * range;
-        patrolPoints.push_back(Vector3(x, 0, z)); // 假设巡逻点都在y=0平面上
+        float x = (std::rand() / static_cast<float>(RAND_MAX)) * range + 50.0f;
+        float z = (std::rand() / static_cast<float>(RAND_MAX)) * range+ 50.0f;
+        patrolPoints.push_back(Vector3(x, -12, z)); // 假设巡逻点都在y=0平面上
         std::cout<<"x :"<<x<<std::endl;
         std::cout<<"z :"<<x<<std::endl;
     }
@@ -55,7 +55,8 @@ GameEnemyObject::GameEnemyObject(NavigationGrid *grid, GamePlayerObject *gameObj
         Vector3 targetPos = patrolPoints[currentPatrolIndex];
         if ((targetPos - currentPos).LengthSquared() < 1.0f) { // 使用LengthSquared来避免开方操作，提高性能
             // 当到达目标点时，随机选择下一个巡逻点
-            currentPatrolIndex = rand() % patrolPoints.size(); // 获取一个随机的路线点索引
+            currentPatrolIndex++;// 获取一个随机的路线点索引
+            currentPatrolIndex%=10;
             targetPos = patrolPoints[currentPatrolIndex]; // 更新目标点
         }
 

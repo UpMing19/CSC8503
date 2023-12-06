@@ -53,6 +53,7 @@ for this module, even in the coursework, but you can add it if you like!
 void TutorialGame::InitialiseAssets() {
     cubeMesh = renderer->LoadMesh("cube.msh");
     sphereMesh = renderer->LoadMesh("sphere.msh");
+    coinMesh = renderer->LoadMesh("coin.msh");
     charMesh = renderer->LoadMesh("goat.msh");
     enemyMesh = renderer->LoadMesh("Keeper.msh");
     bonusMesh = renderer->LoadMesh("apple.msh");
@@ -382,7 +383,7 @@ void TutorialGame::InitWorld() {
     InitMazeWorld();
     InitGamePlayerObject();
     InitGameToolsObject();
-    EnemyObject = AddGameEnemyObject(Vector3(100, -10, 150));
+    EnemyObject = AddGameEnemyObject(Vector3(100, -15, 150));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
 
 //    AddCubeToWorld(Vector3(20,20,10),Vector3(1,1,1),10,"cubetest");
@@ -448,7 +449,7 @@ GameObject *TutorialGame::AddSphereToWorld(const Vector3 &position, float radius
 }
 
 GameObject *
-TutorialGame::AddSphereToWorldWithColor(const Vector3 &position, float radius, float inverseMass, std::string name,
+TutorialGame::AddCoinToWorldWithColor(const Vector3 &position, float radius, float inverseMass, std::string name,
                                         Vector4 color) {
     GameObject *sphere = new GameObject(name);
 
@@ -460,7 +461,7 @@ TutorialGame::AddSphereToWorldWithColor(const Vector3 &position, float radius, f
             .SetScale(sphereSize)
             .SetPosition(position);
 
-    sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
+    sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), coinMesh, basicTex, basicShader));
     sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
     sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -807,9 +808,9 @@ void TutorialGame::InitGamePlayerObject() {
 }
 
 void TutorialGame::InitGameToolsObject() {
-    AddSphereToWorldWithColor(Vector3(40, 20, 30), 1, 10, "sphereTools", Vector4(1, 1, 0, 1));
-    AddSphereToWorldWithColor(Vector3(50, 20, 30), 1, 10, "sphereTools", Vector4(1, 1, 0, 1));
-    AddSphereToWorldWithColor(Vector3(50, 20, 50), 1, 10, "sphereTools", Vector4(1, 1, 0, 1));
+    AddCoinToWorldWithColor(Vector3(40, -15, 30), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+    AddCoinToWorldWithColor(Vector3(50, -15, 30), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+    AddCoinToWorldWithColor(Vector3(50, -15, 50), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
 }
 
 void TutorialGame::EndGame() {
