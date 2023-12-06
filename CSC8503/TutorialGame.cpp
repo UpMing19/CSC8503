@@ -121,11 +121,6 @@ void TutorialGame::UpdateGame(float dt) {
 
     UpdateKeys();
 
-    if (useGravity) {
-        Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
-    } else {
-        Debug::Print("(G)ravity off", Vector2(5, 95), Debug::RED);
-    }
 
     RayCollision closestCollision;
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::K) && selectionObject) {
@@ -152,7 +147,10 @@ void TutorialGame::UpdateGame(float dt) {
     Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Vector4(0, 1, 0, 1));
     Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
 
-    {
+    //todo fix number
+    if (player->score == 20) player->win = true;
+
+    if (!player->win && !player->lose){
         gameCurrentTime -= dt;
         int minutes = floor(gameCurrentTime / 60.0f);
         int seconds = std::round(std::fmod(gameCurrentTime, 60.0f));
@@ -162,15 +160,41 @@ void TutorialGame::UpdateGame(float dt) {
         Debug::Print(time, Vector2(90 - time.length(), 5), timerColor);
         if (gameCurrentTime <= 0.0f) {
             gameCurrentTime = 0.0f;
-            //todo EndGame func in TutorialGame.cpp(165);
-            // EndGame();
+            player->lose = true;
         }
+
+        std::string score = "Score = " + std::to_string(player->score);
+        Debug::Print(score, Vector2(90 - time.length(), 10), timerColor);
+
+        std::string itemsHasGet = "ItemsHasGot = " + std::to_string(player->itemsHasGet);
+        Debug::Print(itemsHasGet, Vector2(90 - time.length() - 10, 15), timerColor);
+
+        std::string itemsLeft = "ItemsLeft = " + std::to_string(player->itemsLeft);
+        Debug::Print(itemsLeft, Vector2(90 - time.length() - 10, 20), timerColor);
+
+
+    }
+
+
+
+    if (player->win || player->lose) {
+        world->UpdateWorld(dt);
+        renderer->Update(dt);
+        physics->Update(dt);
+        EndGame();
+        renderer->Render();
+        return;
     }
 
 
     SelectObject();
     MoveSelectedObject();
 
+    if (useGravity) {
+        Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
+    } else {
+        Debug::Print("(G)ravity off", Vector2(5, 95), Debug::RED);
+    }
 
     world->UpdateWorld(dt);
     renderer->Update(dt);
@@ -253,7 +277,6 @@ void TutorialGame::LockedObjectMovement() {
         float forceMagnitude = 30.0f;
         selectionObject->GetPhysicsObject()->AddForce(forwardDirection * forceMagnitude);
     }
-
 
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
@@ -354,7 +377,14 @@ void TutorialGame::InitWorld() {
     InitDefaultFloor();
     InitMazeWorld();
     InitGamePlayerObject();
+    InitGameToolsObject();
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
+
+//    AddCubeToWorld(Vector3(20,20,10),Vector3(1,1,1),10,"cubetest");
+//    AddSphereToWorld(Vector3(20,20,30),1,10,"spheretest");
+//    AddEnemyToWorld(Vector3(20,20,50),"enemyTest");
+//    AddBonusToWorld(Vector3(20,20,70),"bonusTest");
+
 }
 
 /*
@@ -413,6 +443,31 @@ GameObject *TutorialGame::AddSphereToWorld(const Vector3 &position, float radius
 }
 
 GameObject *
+TutorialGame::AddSphereToWorldWithColor(const Vector3 &position, float radius, float inverseMass, std::string name,
+                                        Vector4 color) {
+    GameObject *sphere = new GameObject(name);
+
+    Vector3 sphereSize = Vector3(radius, radius, radius);
+    SphereVolume *volume = new SphereVolume(radius);
+    sphere->SetBoundingVolume((CollisionVolume *) volume);
+
+    sphere->GetTransform()
+            .SetScale(sphereSize)
+            .SetPosition(position);
+
+    sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
+    sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+
+    sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
+    sphere->GetPhysicsObject()->InitSphereInertia();
+
+    sphere->GetRenderObject()->SetColour(color);
+    world->AddGameObject(sphere);
+
+    return sphere;
+}
+
+GameObject *
 TutorialGame::AddCubeToWorld(const Vector3 &position, Vector3 dimensions, float inverseMass, std::string name) {
     GameObject *cube = new GameObject(name);
 
@@ -438,7 +493,7 @@ GameObject *TutorialGame::AddPlayerToWorld(const Vector3 &position, std::string 
     float meshSize = 1.0f;
     float inverseMass = 0.5f;
 
-    GameObject *character = new GameObject("Player");
+    GameObject *character = new GameObject(name);
     SphereVolume *volume = new SphereVolume(1.0f);
 
     character->SetBoundingVolume((CollisionVolume *) volume);
@@ -462,7 +517,7 @@ GameObject *TutorialGame::AddEnemyToWorld(const Vector3 &position, std::string n
     float meshSize = 3.0f;
     float inverseMass = 0.5f;
 
-    GameObject *character = new GameObject("Enemy");
+    GameObject *character = new GameObject(name);
 
     AABBVolume *volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
     character->SetBoundingVolume((CollisionVolume *) volume);
@@ -698,7 +753,7 @@ StateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position) {
 void TutorialGame::InitMazeWorld() {
 
     if (grid == nullptr) {
-        grid = new NavigationGrid("TestGrid2.txt");
+        grid = new NavigationGrid("TestGrid3.txt");
     }
 
     int **gridSquare = grid->GetGrid();
@@ -745,3 +800,34 @@ void TutorialGame::InitGamePlayerObject() {
     world->AddGameObject(player);
 
 }
+
+void TutorialGame::InitGameToolsObject() {
+    AddSphereToWorldWithColor(Vector3(40, 20, 30), 1, 10, "sphereTools", Vector4(1, 1, 0, 1));
+    AddSphereToWorldWithColor(Vector3(50, 20, 30), 1, 10, "sphereTools", Vector4(1, 1, 0, 1));
+    AddSphereToWorldWithColor(Vector3(50, 20, 50), 1, 10, "sphereTools", Vector4(1, 1, 0, 1));
+}
+
+void TutorialGame::EndGame() {
+
+    world->GetMainCamera().SetPosition(Vector3(0, 0, 0));
+
+    std::string score = "Score = ";
+    score.append(std::to_string(player->score));
+    score.append(";");
+    Debug::Print(score, Vector2(30, 50));
+
+
+    std::string itemLeft = "itemLeft = ";
+    itemLeft.append(std::to_string(player->itemsLeft));
+    itemLeft.append(";");
+    Debug::Print(itemLeft, Vector2(30, 60));
+
+    std::string text = "Play Again(F3);";
+
+    Debug::Print(text, Vector2(30, 70));
+
+    text = "Exit(ESC);";
+    Debug::Print(text, Vector2(30, 80));
+
+}
+

@@ -9,17 +9,21 @@ GamePlayerObject::~GamePlayerObject() {
 }
 void GamePlayerObject::OnCollisionBegin(NCL::CSC8503::GameObject *otherObject) {
 
-    if (name == "player" && otherObject->GetName() == "coin") {
+    if (name == "player" && otherObject->GetName() == "coinTools") {
         otherObject->SetIsActive(false);
         otherObject->SetBoundingVolume(nullptr);
         score += 10;
         itemsHasGet++;
         itemsLeft--;
     }
-    if (name == "player" && otherObject->GetName() == "sphere") {
-
+    if (name == "player" && otherObject->GetName() == "sphereTools") {
+        otherObject->SetIsActive(false);
+        otherObject->SetBoundingVolume(nullptr);
+        score += 10;
+        itemsHasGet++;
+        itemsLeft--;
     }
-    if (name == "player" && otherObject->GetName() == "key") {
+    if (name == "player" && otherObject->GetName() == "keyTools") {
         otherObject->SetIsActive(false);
         otherObject->SetBoundingVolume(nullptr);
         keyNum++;

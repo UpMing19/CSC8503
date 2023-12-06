@@ -9,6 +9,7 @@
 #include "NavigationGrid.h"
 #include "StateGameObject.h"
 #include "GamePlayerObject.h"
+#include "Vector4.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -49,7 +50,8 @@ namespace NCL {
 			void LockedObjectMovement();
 
 			GameObject* AddFloorToWorld(const Vector3& position,std::string name= "uname");
-			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f,std::string name = "uname");
+			GameObject* AddSphereToWorldWithColor(const Vector3& position, float radius, float inverseMass = 10.0f,std::string name = "uname",Vector4 color = Vector4(1,1,1,1));
+            GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f,std::string name = "uname");
 			GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f,std::string name= "uname");
 
 			GameObject* AddPlayerToWorld(const Vector3& position,std::string name= "uname");
@@ -63,6 +65,8 @@ namespace NCL {
             void BridgeConstraintTest();
             void InitMazeWorld();
             void InitGamePlayerObject();
+            void InitGameToolsObject();
+            void EndGame();
 
 #ifdef USEVULKAN
 			GameTechVulkanRenderer*	renderer;
