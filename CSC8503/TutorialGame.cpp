@@ -147,7 +147,7 @@ void TutorialGame::UpdateGame(float dt) {
     Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Vector4(0, 1, 0, 1));
     Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
 
-
+    //todo fix number
     if (player->score == 20) player->win = true;
 
     if (!player->win && !player->lose){
