@@ -32,7 +32,7 @@ CylinderStateGameObject::CylinderStateGameObject() {
 
     stateMachine->AddTransition(new StateTransition(stateB, stateA,
                                                     [&]() -> bool {
-                                                        return this->counter < 9.0f;
+                                                        return this->counter < 0.0f;
                                                     }
     ));
 }
@@ -47,14 +47,14 @@ void CylinderStateGameObject::Update(float dt) {
 }
 
 void CylinderStateGameObject::MoveLeft(float dt) {
-    GetPhysicsObject()->AddForce({-15, 0, 0});
+    GetPhysicsObject()->AddForce({-10, 0, 0});
     counter += dt;
    // std::cout<<"counter:"<<counter<<std::endl;
 }
 
 void CylinderStateGameObject::MoveRight(float dt) {
    // std::cout<<"counter:"<<counter<<std::endl;
-    GetPhysicsObject()->AddForce({15, 0, 0});
+    GetPhysicsObject()->AddForce({10, 0, 0});
     counter -= dt;
    // std::cout<<"counter:"<<counter<<std::endl;
 }
