@@ -58,6 +58,8 @@ void TutorialGame::InitialiseAssets() {
     enemyMesh = renderer->LoadMesh("Keeper.msh");
     bonusMesh = renderer->LoadMesh("apple.msh");
     capsuleMesh = renderer->LoadMesh("capsule.msh");
+    gooseMesh = renderer->LoadMesh("goose.msh");
+    cylinderMesh = renderer->LoadMesh("Cylinder.msh");
 
     basicTex = renderer->LoadTexture("checkerboard.png");
     basicShader = renderer->LoadShader("scene.vert", "scene.frag");
@@ -148,10 +150,8 @@ void TutorialGame::UpdateGame(float dt) {
     Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Vector4(0, 1, 0, 1));
     Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
 
-    //todo fix number
-    if (player->score == 20) player->win = true;
 
-    if (!player->win && !player->lose){
+    if (!player->win && !player->lose) {
         gameCurrentTime -= dt;
         int minutes = floor(gameCurrentTime / 60.0f);
         int seconds = std::round(std::fmod(gameCurrentTime, 60.0f));
@@ -174,8 +174,17 @@ void TutorialGame::UpdateGame(float dt) {
         Debug::Print(itemsLeft, Vector2(90 - time.length() - 10, 20), timerColor);
 
 
-    }
 
+        std::string ComeBackMenu = "F3 :ComeBackMenu ";
+        Debug::Print(ComeBackMenu, Vector2(0 , 10), Debug::BLUE);
+
+        std::string Remake = "F1 :Remake  ";
+        Debug::Print(Remake, Vector2(0 , 20), Debug::BLUE);
+
+
+
+
+    }
 
 
     if (player->win || player->lose) {
@@ -201,14 +210,14 @@ void TutorialGame::UpdateGame(float dt) {
     renderer->Update(dt);
     physics->Update(dt);
 
-    if (testStateObject) {
+    if (testStateObject && cylinderStateObject) {
         //std::cout<<"debug"<<std::endl;
+        cylinderStateObject->Update(dt);
         testStateObject->Update(dt);
     }
-    if(EnemyObject!=nullptr){
+    if (EnemyObject != nullptr) {
         EnemyObject->Update(dt);
     }
-
 
 
     renderer->Render();
@@ -279,7 +288,7 @@ void TutorialGame::LockedObjectMovement() {
 
         forwardDirection.Normalise();
 
-        float forceMagnitude = 30.0f;
+        float forceMagnitude = 15.0f;
         selectionObject->GetPhysicsObject()->AddForce(forwardDirection * forceMagnitude);
     }
 
@@ -289,7 +298,7 @@ void TutorialGame::LockedObjectMovement() {
         Vector3 backwardDirection = pigOrientation * Vector3(0, 0, 1);
         backwardDirection.Normalise();
 
-        float forceMagnitude = 30.0f;
+        float forceMagnitude = 15.0f;
         selectionObject->GetPhysicsObject()->AddForce(backwardDirection * forceMagnitude);
     }
 
@@ -297,7 +306,7 @@ void TutorialGame::LockedObjectMovement() {
         Quaternion pigOrientation = selectionObject->GetPhysicsObject()->GetTransForm()->GetOrientation();
         Vector3 leftDirection = pigOrientation * Vector3(-1, 0, 0);
         leftDirection.Normalise();
-        float forceMagnitude = 30.0f;
+        float forceMagnitude = 15.0f;
         selectionObject->GetPhysicsObject()->AddForce(leftDirection * forceMagnitude);
     }
 
@@ -305,17 +314,17 @@ void TutorialGame::LockedObjectMovement() {
         Quaternion pigOrientation = selectionObject->GetPhysicsObject()->GetTransForm()->GetOrientation();
         Vector3 rightDirection = pigOrientation * Vector3(1, 0, 0);
         rightDirection.Normalise();
-        float forceMagnitude = 30.0f;
+        float forceMagnitude = 15.0f;
         selectionObject->GetPhysicsObject()->AddForce(rightDirection * forceMagnitude);
     }
 
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
-        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 8, 0));
+        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 1, 0));
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
-        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -8, 0));
+        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -1, 0));
     }
 
 
@@ -383,9 +392,9 @@ void TutorialGame::InitWorld() {
     InitMazeWorld();
     InitGamePlayerObject();
     InitGameToolsObject();
-    EnemyObject = AddGameEnemyObject(Vector3(100, -15, 150));
+    EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
-
+    cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280),cylinderMesh);
 //    AddCubeToWorld(Vector3(20,20,10),Vector3(1,1,1),10,"cubetest");
 //    AddSphereToWorld(Vector3(20,20,30),1,10,"spheretest");
 //    AddEnemyToWorld(Vector3(20,20,50),"enemyTest");
@@ -450,7 +459,7 @@ GameObject *TutorialGame::AddSphereToWorld(const Vector3 &position, float radius
 
 GameObject *
 TutorialGame::AddCoinToWorldWithColor(const Vector3 &position, float radius, float inverseMass, std::string name,
-                                        Vector4 color) {
+                                      Vector4 color) {
     GameObject *sphere = new GameObject(name);
 
     Vector3 sphereSize = Vector3(radius, radius, radius);
@@ -734,7 +743,7 @@ void TutorialGame::BridgeConstraintTest() {
 
 StateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position) {
     StateGameObject *sphere = new StateGameObject();
-    sphere->SetName("MovingSphere");
+    sphere->SetName("MovingItem");
     Vector3 sphereSize = Vector3(10.0f, 10.0f, 10.0f);
     SphereVolume *volume = new SphereVolume(10.0f);
     sphere->SetBoundingVolume((CollisionVolume *) volume);
@@ -744,6 +753,29 @@ StateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position) {
             .SetPosition(position);
 
     sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
+    sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+
+    sphere->GetRenderObject()->SetColour(Vector4(0, 0.5f, 0.5f, 1));
+
+    sphere->GetPhysicsObject()->SetInverseMass(1.0f);
+    sphere->GetPhysicsObject()->InitSphereInertia();
+
+    world->AddGameObject(sphere);
+
+    return sphere;
+}
+CylinderStateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position,Mesh *mesh) {
+    CylinderStateGameObject *sphere = new CylinderStateGameObject();
+    sphere->SetName("MovingItem");
+    Vector3 sphereSize = Vector3(10.0f, 10.0f, 10.0f);
+    SphereVolume *volume = new SphereVolume(10.0f);
+    sphere->SetBoundingVolume((CollisionVolume *) volume);
+
+    sphere->GetTransform()
+            .SetScale(sphereSize)
+            .SetPosition(position);
+
+    sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), mesh, basicTex, basicShader));
     sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
     sphere->GetRenderObject()->SetColour(Vector4(0, 0.5f, 0.5f, 1));
@@ -789,7 +821,7 @@ void TutorialGame::InitGamePlayerObject() {
     player = new GamePlayerObject();
     player->SetName("player");
 
-    SphereVolume *volume = new SphereVolume(4.0f);
+    SphereVolume *volume = new SphereVolume(2.0f);
     player->SetBoundingVolume((CollisionVolume *) volume);
 
     player->GetTransform()
@@ -808,9 +840,33 @@ void TutorialGame::InitGamePlayerObject() {
 }
 
 void TutorialGame::InitGameToolsObject() {
-    AddCoinToWorldWithColor(Vector3(40, -15, 30), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
-    AddCoinToWorldWithColor(Vector3(50, -15, 30), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
-    AddCoinToWorldWithColor(Vector3(50, -15, 50), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+  //  AddCoinToWorldWithColor(Vector3(40, -15, 30), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+  //  AddCoinToWorldWithColor(Vector3(40, -15, 30), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+
+    for(int i = 350;i<=380 ;i+=10)
+        for(int j = 70 ;j<=100 ;j+=10)
+            AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+
+    for(int i = 130;i<=180 ;i+=10)
+        for(int j = 10 ;j<=30 ;j+=10)
+            AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+
+    for(int i = 30;i<=70 ;i+=10)
+        for(int j = 110 ;j<=110 ;j+=10)
+            AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+
+    for(int i = 350;i<=360 ;i+=10)
+        for(int j = 260 ;j<=280 ;j+=10)
+            AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+
+    for(int i = 10;i<=20 ;i+=10)
+        for(int j = 270 ;j<=290 ;j+=10)
+            AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+
+    for(int i = 50;i<=60 ;i+=10)
+        for(int j = 140 ;j<=140 ;j+=10)
+            AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+
 }
 
 void TutorialGame::EndGame() {
@@ -837,15 +893,15 @@ void TutorialGame::EndGame() {
 
 }
 
-GameEnemyObject* TutorialGame::AddGameEnemyObject(Vector3 position){
+GameEnemyObject *TutorialGame::AddGameEnemyObject(Vector3 position) {
     float meshSize = 7.0f;
     float inverseMass = 5.0f;
 
-    GameEnemyObject* character = new GameEnemyObject(grid, player);
+    GameEnemyObject *character = new GameEnemyObject(grid, player);
 
     character->SetName("EnemyPlayer");
-    AABBVolume* volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
-    character->SetBoundingVolume((CollisionVolume*)volume);
+    AABBVolume *volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
+    character->SetBoundingVolume((CollisionVolume *) volume);
 
     character->GetTransform()
             .SetScale(Vector3(meshSize, meshSize, meshSize))

@@ -14,6 +14,7 @@
 #include "GamePlayerObject.h"
 #include "Vector4.h"
 #include "GameEnemyObject.h"
+#include "CylinderStateGameObject.h"
 
 namespace NCL {
     namespace CSC8503 {
@@ -78,8 +79,10 @@ namespace NCL {
             GameObject *AddBonusToWorld(const Vector3 &position, std::string name = "uname");
 
             StateGameObject *AddStateObjectToWorld(const Vector3 &position);
+            CylinderStateGameObject *AddStateObjectToWorld(const Vector3 &position,Mesh* mesh);
 
             StateGameObject *testStateObject = nullptr;
+            CylinderStateGameObject *cylinderStateObject = nullptr;
 
 
             void BridgeConstraintTest();
@@ -123,6 +126,8 @@ namespace NCL {
             Mesh *charMesh = nullptr;
             Mesh *enemyMesh = nullptr;
             Mesh *bonusMesh = nullptr;
+            Mesh *cylinderMesh = nullptr;
+            Mesh *gooseMesh = nullptr;
 
             //Coursework Additional functionality
             GameObject *lockedObject = nullptr;
