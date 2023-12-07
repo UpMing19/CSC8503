@@ -174,6 +174,16 @@ void TutorialGame::UpdateGame(float dt) {
         Debug::Print(itemsLeft, Vector2(90 - time.length() - 10, 20), timerColor);
 
 
+
+        std::string ComeBackMenu = "F3 :ComeBackMenu ";
+        Debug::Print(ComeBackMenu, Vector2(0 , 10), Debug::BLUE);
+
+        std::string Remake = "F1 :Remake  ";
+        Debug::Print(Remake, Vector2(0 , 20), Debug::BLUE);
+
+
+
+
     }
 
 
