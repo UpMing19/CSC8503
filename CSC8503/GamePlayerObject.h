@@ -32,7 +32,7 @@ public:
 
 public:
     int itemsHasGet = 0;
-    int itemsLeft = 16;
+    int itemsLeft = 42;
     int keyNum = 0;
     int score = 0;
     bool win = false;
