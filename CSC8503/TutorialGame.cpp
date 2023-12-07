@@ -150,8 +150,6 @@ void TutorialGame::UpdateGame(float dt) {
     Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Vector4(0, 1, 0, 1));
     Debug::DrawLine(Vector3(), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
 
-    //todo fix number
-    if (player->score == 20) player->win = true;
 
     if (!player->win && !player->lose) {
         gameCurrentTime -= dt;
@@ -202,8 +200,9 @@ void TutorialGame::UpdateGame(float dt) {
     renderer->Update(dt);
     physics->Update(dt);
 
-    if (testStateObject) {
+    if (testStateObject && cylinderStateObject) {
         //std::cout<<"debug"<<std::endl;
+        cylinderStateObject->Update(dt);
         testStateObject->Update(dt);
     }
     if (EnemyObject != nullptr) {
@@ -385,7 +384,7 @@ void TutorialGame::InitWorld() {
     InitGameToolsObject();
     //  EnemyObject = AddGameEnemyObject(Vector3(100, -15, 150));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
-
+    cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280),cylinderMesh);
 //    AddCubeToWorld(Vector3(20,20,10),Vector3(1,1,1),10,"cubetest");
 //    AddSphereToWorld(Vector3(20,20,30),1,10,"spheretest");
 //    AddEnemyToWorld(Vector3(20,20,50),"enemyTest");
@@ -734,7 +733,7 @@ void TutorialGame::BridgeConstraintTest() {
 
 StateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position) {
     StateGameObject *sphere = new StateGameObject();
-    sphere->SetName("MovingSphere");
+    sphere->SetName("MovingItem");
     Vector3 sphereSize = Vector3(10.0f, 10.0f, 10.0f);
     SphereVolume *volume = new SphereVolume(10.0f);
     sphere->SetBoundingVolume((CollisionVolume *) volume);
@@ -744,6 +743,29 @@ StateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position) {
             .SetPosition(position);
 
     sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
+    sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+
+    sphere->GetRenderObject()->SetColour(Vector4(0, 0.5f, 0.5f, 1));
+
+    sphere->GetPhysicsObject()->SetInverseMass(1.0f);
+    sphere->GetPhysicsObject()->InitSphereInertia();
+
+    world->AddGameObject(sphere);
+
+    return sphere;
+}
+CylinderStateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position,Mesh *mesh) {
+    CylinderStateGameObject *sphere = new CylinderStateGameObject();
+    sphere->SetName("MovingItem");
+    Vector3 sphereSize = Vector3(10.0f, 10.0f, 10.0f);
+    SphereVolume *volume = new SphereVolume(10.0f);
+    sphere->SetBoundingVolume((CollisionVolume *) volume);
+
+    sphere->GetTransform()
+            .SetScale(sphereSize)
+            .SetPosition(position);
+
+    sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), mesh, basicTex, basicShader));
     sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
     sphere->GetRenderObject()->SetColour(Vector4(0, 0.5f, 0.5f, 1));
