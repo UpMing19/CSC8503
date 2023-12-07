@@ -392,7 +392,7 @@ void TutorialGame::InitWorld() {
     InitMazeWorld();
     InitGamePlayerObject();
     InitGameToolsObject();
-    //  EnemyObject = AddGameEnemyObject(Vector3(100, -15, 150));
+    EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
     cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280),cylinderMesh);
 //    AddCubeToWorld(Vector3(20,20,10),Vector3(1,1,1),10,"cubetest");
