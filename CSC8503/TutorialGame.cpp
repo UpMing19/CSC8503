@@ -121,9 +121,6 @@ void TutorialGame::UpdateGame(float dt) {
         }
     }
 
-
-
-
     UpdateKeys();
 
 
@@ -337,7 +334,7 @@ void TutorialGame::InitCamera() {
         return;
 
     if (cameraFollow == nullptr)
-        cameraFollow = new CWFollowCamera(*world, *player);
+        cameraFollow = new GamePlayerFollowCamera(*world, *player);
 
     world->SetMainCamera(cameraFollow);
     world->GetMainCamera()->SetNearPlane(0.1f);

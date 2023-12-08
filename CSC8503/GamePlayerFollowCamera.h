@@ -7,11 +7,11 @@ namespace NCL
 {
 	namespace CSC8503
 	{
-		class CWFollowCamera : public Camera
+		class GamePlayerFollowCamera : public Camera
 		{
 		public:
-			CWFollowCamera(GameWorld& gWorld, GamePlayerObject& target);
-			~CWFollowCamera() {};
+			GamePlayerFollowCamera(GameWorld& gWorld, GamePlayerObject& target);
+			~GamePlayerFollowCamera() {};
 
 			virtual void UpdateCamera(float dt) override;
 

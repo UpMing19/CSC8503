@@ -1,30 +1,17 @@
-#include "CWFollowCamera.h"
+#include "GamePlayerFollowCamera.h"
 #include "Window.h"
 #include "Maths.h"
 //#include <iostream>
 
-NCL::CSC8503::CWFollowCamera::CWFollowCamera(GameWorld& gWorld, GamePlayerObject& target) : world(gWorld), followTarget(target)
+NCL::CSC8503::GamePlayerFollowCamera::GamePlayerFollowCamera(GameWorld& gWorld, GamePlayerObject& target) : world(gWorld), followTarget(target)
 {
 	requiredRayDistance = 36.0f;
 	startOffset = followOffset;
 }
 
-void NCL::CSC8503::CWFollowCamera::UpdateCamera(float dt)
+void NCL::CSC8503::GamePlayerFollowCamera::UpdateCamera(float dt)
 {
-	//position = followTarget.GetPosition() + followOffset;
 
-	/*elaspedTime += dt;
-
-	float camX = sin(pitch) * 30.0f;
-	float camZ = cos(elaspedTime) * 30.0f;
-	position = Vector3(camX, 0.0f, camZ) + followTarget.GetPosition();
-
-	Matrix4 viewMatrix = Matrix4::BuildViewMatrix(position, followTarget.GetPosition(), Vector3(0, 1, 0)).Inverse();
-	Quaternion q(viewMatrix);
-	Vector3 angles = q.ToEuler();
-
-	pitch = angles.x;
-	yaw = angles.y;*/
 
 	if (!enableInput)
 		return;
@@ -36,9 +23,6 @@ void NCL::CSC8503::CWFollowCamera::UpdateCamera(float dt)
 	if (h < 0) h += 360.0f;
 	if (h > 360.0f) h -= 360.0f;
 
-
-	//Quaternion turnAngle = Quaternion::AxisAngleToQuaterion(Vector3(0, 1, 0), h);
-	//Quaternion turnAngleY = Quaternion::AxisAngleToQuaterion(Vector3(1, 0, 0), v);
 
 	Matrix4 yawMat = Matrix4::Rotation(h, Vector3(0, 1, 0));
 	Matrix4 pitchMat = Matrix4::Rotation(v, yawMat * Vector3(-1, 0, 0));

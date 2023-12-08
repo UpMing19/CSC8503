@@ -7,7 +7,7 @@
 #ifdef USEVULKAN
 #include "GameTechVulkanRenderer.h"
 #endif
-#include "CWFollowCamera.h"
+#include "GamePlayerFollowCamera.h"
 #include "PhysicsSystem.h"
 #include "NavigationGrid.h"
 #include "StateGameObject.h"
@@ -151,7 +151,7 @@ namespace NCL {
             GameEnemyObject *EnemyObject = nullptr;
 
             Camera* cameraMain;
-            CWFollowCamera* cameraFollow;
+            GamePlayerFollowCamera* cameraFollow;
             Vector3 startCameraPos = Vector3(512.0f, 40.0f, 512.0f);
         };
     }

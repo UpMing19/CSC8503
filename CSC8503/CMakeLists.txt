@@ -13,7 +13,7 @@ set(Header_Files
         "GamePlayerObject.h"
         "GameEnemyObject.h"
         "CylinderStateGameObject.h"
-        "CWFollowCamera.h"
+        "GamePlayerFollowCamera.h"
 )
 source_group("Header Files" FILES ${Header_Files})
 
@@ -28,7 +28,7 @@ set(Source_Files
         "GamePlayerObject.cpp"
         "GameEnemyObject.cpp"
         "CylinderStateGameObject.cpp"
-        "CWFollowCamera.cpp"
+        "GamePlayerFollowCamera.cpp"
 )
 
 if (USE_VULKAN)

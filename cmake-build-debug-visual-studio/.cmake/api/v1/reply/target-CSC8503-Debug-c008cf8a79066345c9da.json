@@ -741,7 +741,7 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "CSC8503/CWFollowCamera.h",
+			"path" : "CSC8503/GamePlayerFollowCamera.h",
 			"sourceGroupIndex" : 1
 		},
 		{
@@ -807,7 +807,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 1,
-			"path" : "CSC8503/CWFollowCamera.cpp",
+			"path" : "CSC8503/GamePlayerFollowCamera.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
