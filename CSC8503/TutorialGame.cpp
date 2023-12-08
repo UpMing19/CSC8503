@@ -14,6 +14,18 @@ using namespace CSC8503;
 
 TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse()) {
     world = new GameWorld();
+
+    cameraMain = world->GetMainCamera();
+
+    world->GetMainCamera()->SetNearPlane(0.1f);
+    world->GetMainCamera()->SetFarPlane(15000.0f);
+    world->SetMainCamera(cameraMain);
+    world->GetMainCamera()->SetPosition(Vector3(0 + 512.0f, 280.0f, 500.0f + 512.0f));
+    world->GetMainCamera()->SetPitch(-35.0f);
+    world->GetMainCamera()->SetYaw(0.0f);
+    world->GetMainCamera()->enableInput = false;
+
+
 #ifdef USEVULKAN
     renderer	= new GameTechVulkanRenderer(*world);
     renderer->Init();
@@ -25,19 +37,11 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
     physics = new PhysicsSystem(*world);
 
     forceMagnitude = 10.0f;
-    useGravity = false;
+    useGravity = true;
     inSelectionMode = false;
 
     gameCurrentTime = gameTime;
 
-    world->GetMainCamera().SetController(controller);
-
-    controller.MapAxis(0, "Sidestep");
-    controller.MapAxis(1, "UpDown");
-    controller.MapAxis(2, "Forward");
-
-    controller.MapAxis(3, "XLook");
-    controller.MapAxis(4, "YLook");
 
     InitialiseAssets();
     // BridgeConstraintTest();
@@ -64,7 +68,6 @@ void TutorialGame::InitialiseAssets() {
     basicTex = renderer->LoadTexture("checkerboard.png");
     basicShader = renderer->LoadShader("scene.vert", "scene.frag");
 
-    InitCamera();
     InitWorld();
 }
 
@@ -86,7 +89,7 @@ TutorialGame::~TutorialGame() {
 void TutorialGame::UpdateGame(float dt) {
 
     if (menu) {
-        world->GetMainCamera().SetPosition(Vector3(0, 0, 0));
+        world->GetMainCamera()->SetPosition(Vector3(0, 0, 0));
         Debug::Print("1. Start Game ", Vector2(30, 40), Debug::GREEN);
         Debug::Print("Exit - Press ESC", Vector2(30, 50), Debug::GREEN);
         physics->Update(dt);
@@ -99,53 +102,30 @@ void TutorialGame::UpdateGame(float dt) {
         Debug::UpdateRenderables(dt);
         return;
     }
-    //  std::cout<<world->GetMainCamera().GetPosition()<<std::endl;
-    //  std::cout<<world->GetMainCamera().GetPitch()<<std::endl;
-    //   std::cout<<world->GetMainCamera().GetYaw()<<std::endl;
-    if (!inSelectionMode) {
-        world->GetMainCamera().UpdateCamera(dt);
+
+    world->GetMainCamera()->UpdateCamera(dt);
+
+
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q))
+    {
+        inSelectionMode = !inSelectionMode;
+        if (inSelectionMode)
+            world->SetMainCamera(cameraMain);
+        else
+        {
+            lockedObject  = selectionObject = player;
+            world->SetMainCamera(cameraFollow);
+            inSelectionMode = false;
+            Window::GetWindow()->ShowOSPointer(false);
+            Window::GetWindow()->LockMouseToWindow(true);
+        }
     }
 
-    if (lockedObject != nullptr) {
-        Vector3 objPos = lockedObject->GetTransform().GetPosition();
-        Vector3 camPos = objPos + lockedOffset;
 
-        Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
 
-        Matrix4 modelMat = temp.Inverse();
-
-        Quaternion q(modelMat);
-        Vector3 angles = q.ToEuler(); //nearly there now!
-
-        //todo follow camrea
-        //world->GetMainCamera().SetPosition(camPos);
-        //world->GetMainCamera().SetPitch(angles.x);
-        //world->GetMainCamera().SetYaw(angles.y);
-    }
 
     UpdateKeys();
 
-
-    RayCollision closestCollision;
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::K) && selectionObject) {
-        Vector3 rayPos;
-        Vector3 rayDir;
-
-        rayDir = selectionObject->GetTransform().GetOrientation() * Vector3(0, 0, -1);
-
-        rayPos = selectionObject->GetTransform().GetPosition();
-
-        Ray r = Ray(rayPos, rayDir);
-
-        if (world->Raycast(r, closestCollision, true, selectionObject)) {
-            if (objClosest) {
-                objClosest->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
-            }
-            objClosest = (GameObject *) closestCollision.node;
-
-            objClosest->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
-        }
-    }
 
     Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
     Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Vector4(0, 1, 0, 1));
@@ -175,19 +155,18 @@ void TutorialGame::UpdateGame(float dt) {
         Debug::Print(itemsLeft, Vector2(90 - time.length() - 10, 20), timerColor);
 
 
-
         std::string ComeBackMenu = "F3 :ComeBackMenu ";
-        Debug::Print(ComeBackMenu, Vector2(0 , 10), Debug::BLUE);
+        Debug::Print(ComeBackMenu, Vector2(0, 10), Debug::BLUE);
 
         std::string Remake = "F1 :Remake  ";
-        Debug::Print(Remake, Vector2(0 , 20), Debug::BLUE);
-
-
+        Debug::Print(Remake, Vector2(0, 20), Debug::BLUE);
 
 
     }
-    std::cout<<"distance:"<<fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length())<<std::endl;
-    if(fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length()) < 9.0f)
+    std::cout << "distance:"
+              << fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length())
+              << std::endl;
+    if (fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length()) < 9.0f)
         player->lose = true;
 
     if (player->win || player->lose) {
@@ -200,8 +179,6 @@ void TutorialGame::UpdateGame(float dt) {
     }
 
 
-    SelectObject();
-    MoveSelectedObject();
 
     if (useGravity) {
         Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
@@ -268,7 +245,7 @@ void TutorialGame::UpdateKeys() {
 
 void TutorialGame::LockedObjectMovement() {
 
-    Matrix4 view = world->GetMainCamera().BuildViewMatrix();
+    Matrix4 view = world->GetMainCamera()->BuildViewMatrix();
     Matrix4 camWorld = view.Inverse();
 
     Vector3 rightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
@@ -306,27 +283,10 @@ void TutorialGame::LockedObjectMovement() {
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
-        Quaternion pigOrientation = selectionObject->GetPhysicsObject()->GetTransForm()->GetOrientation();
-        Vector3 leftDirection = pigOrientation * Vector3(-1, 0, 0);
-        leftDirection.Normalise();
-        float forceMagnitude = 15.0f;
-        selectionObject->GetPhysicsObject()->AddForce(leftDirection * forceMagnitude);
-    }
-
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
-        Quaternion pigOrientation = selectionObject->GetPhysicsObject()->GetTransForm()->GetOrientation();
-        Vector3 rightDirection = pigOrientation * Vector3(1, 0, 0);
-        rightDirection.Normalise();
-        float forceMagnitude = 15.0f;
-        selectionObject->GetPhysicsObject()->AddForce(rightDirection * forceMagnitude);
-    }
-
-
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
         selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 1, 0));
     }
 
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
+    if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
         selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -1, 0));
     }
 
@@ -372,21 +332,29 @@ void TutorialGame::DebugObjectMovement() {
 }
 
 void TutorialGame::InitCamera() {
-    world->GetMainCamera().SetNearPlane(0.1f);
-    world->GetMainCamera().SetFarPlane(5000.0f);
-    world->GetMainCamera().SetPitch(-45);
-    world->GetMainCamera().SetYaw(180.0f);
-    world->GetMainCamera().SetPosition(Vector3(20, 190, -90));
+    menu = false;
+    if (world == nullptr || world->GetMainCamera() == nullptr)
+        return;
 
+    if (cameraFollow == nullptr)
+        cameraFollow = new CWFollowCamera(*world, *player);
+
+    world->SetMainCamera(cameraFollow);
+    world->GetMainCamera()->SetNearPlane(0.1f);
+    world->GetMainCamera()->SetFarPlane(15000.0f);
+    world->GetMainCamera()->SetPitch(0.0f);
+    world->GetMainCamera()->SetYaw(0.0f);
+    world->GetMainCamera()->SetPosition(startCameraPos);
+
+    cameraMain->enableInput = true;
+    cameraFollow->enableInput = true;
     lockedObject = nullptr;
+
 }
 
 void TutorialGame::InitWorld() {
     world->ClearAndErase();
     physics->Clear();
-
-    menu = false;
-
 
     // InitMixedGridWorld(15, 15, 3.5f, 3.5f);
 
@@ -397,11 +365,8 @@ void TutorialGame::InitWorld() {
     InitGameToolsObject();
     EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
-    cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280),cylinderMesh);
-//    AddCubeToWorld(Vector3(20,20,10),Vector3(1,1,1),10,"cubetest");
-//    AddSphereToWorld(Vector3(20,20,30),1,10,"spheretest");
-//    AddEnemyToWorld(Vector3(20,20,50),"enemyTest");
-//    AddBonusToWorld(Vector3(20,20,70),"bonusTest");
+    cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280), cylinderMesh);
+
 
 }
 
@@ -635,6 +600,7 @@ letting you move the camera around.
 bool TutorialGame::SelectObject() {
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
         inSelectionMode = !inSelectionMode;
+        //   inSelectionMode = false;
         if (inSelectionMode) {
             Window::GetWindow()->ShowOSPointer(true);
             Window::GetWindow()->LockMouseToWindow(false);
@@ -643,6 +609,8 @@ bool TutorialGame::SelectObject() {
             Window::GetWindow()->LockMouseToWindow(true);
         }
     }
+    // selectionObject = player;
+
     if (inSelectionMode) {
         Debug::Print("Press Q to change to camera mode!", Vector2(5, 85));
 
@@ -652,7 +620,7 @@ bool TutorialGame::SelectObject() {
                 selectionObject = nullptr;
             }
 
-            Ray ray = CollisionDetection::BuildRayFromMouse(world->GetMainCamera());
+            Ray ray = CollisionDetection::BuildRayFromMouse(*world->GetMainCamera());
 
             RayCollision closestCollision;
             if (world->Raycast(ray, closestCollision, true)) {
@@ -697,27 +665,6 @@ added linear motion into our physics system. After the second tutorial, objects 
 line - after the third, they'll be able to twist under torque aswell.
 */
 
-void TutorialGame::MoveSelectedObject() {
-    // renderer -> DrawString ( " Click Force : " + std :: to_string ( forceMagnitude ) , Vector2 (10 , 20));
-    Debug::Print("Click Force:" + std::to_string(forceMagnitude), Vector2(5, 90));
-    forceMagnitude += Window::GetMouse()->GetWheelMovement() * 100.0f;
-
-    if (!selectionObject) {
-        return;//we haven't selected anything!
-    }
-    //Push the selected object!
-    if (Window::GetMouse()->ButtonPressed(NCL::MouseButtons::Right)) {
-        Ray ray = CollisionDetection::BuildRayFromMouse(world->GetMainCamera());
-
-        RayCollision closestCollision;
-        if (world->Raycast(ray, closestCollision, true)) {
-            if (closestCollision.node == selectionObject) {
-                selectionObject->GetPhysicsObject()->AddForceAtPosition(ray.GetDirection() * forceMagnitude,
-                                                                        closestCollision.collidedAt);
-            }
-        }
-    }
-}
 
 
 void TutorialGame::BridgeConstraintTest() {
@@ -767,7 +714,8 @@ StateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position) {
 
     return sphere;
 }
-CylinderStateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position,Mesh *mesh) {
+
+CylinderStateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &position, Mesh *mesh) {
     CylinderStateGameObject *sphere = new CylinderStateGameObject();
     sphere->SetName("MovingItem");
     Vector3 sphereSize = Vector3(10.0f, 10.0f, 10.0f);
@@ -843,46 +791,47 @@ void TutorialGame::InitGamePlayerObject() {
 }
 
 void TutorialGame::InitGameToolsObject() {
-  //  AddCoinToWorldWithColor(Vector3(40, -15, 30), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
-  //  AddCoinToWorldWithColor(Vector3(40, -15, 30), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+    //  AddCoinToWorldWithColor(Vector3(40, -15, 30), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+    //  AddCoinToWorldWithColor(Vector3(40, -15, 30), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
 
-    for(int i = 350;i<=380 ;i+=10)
-        for(int j = 70 ;j<=100 ;j+=10)
+    for (int i = 350; i <= 380; i += 10)
+        for (int j = 70; j <= 100; j += 10)
             AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
 
-    for(int i = 130;i<=180 ;i+=10)
-        for(int j = 10 ;j<=30 ;j+=10)
+    for (int i = 130; i <= 180; i += 10)
+        for (int j = 10; j <= 30; j += 10)
             AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
 
-    for(int i = 30;i<=70 ;i+=10)
-        for(int j = 110 ;j<=110 ;j+=10)
+    for (int i = 30; i <= 70; i += 10)
+        for (int j = 110; j <= 110; j += 10)
             AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
 
-    for(int i = 350;i<=360 ;i+=10)
-        for(int j = 260 ;j<=280 ;j+=10)
+    for (int i = 350; i <= 360; i += 10)
+        for (int j = 260; j <= 280; j += 10)
             AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
 
-    for(int i = 10;i<=20 ;i+=10)
-        for(int j = 270 ;j<=290 ;j+=10)
+    for (int i = 10; i <= 20; i += 10)
+        for (int j = 270; j <= 290; j += 10)
             AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
 
-    for(int i = 50;i<=60 ;i+=10)
-        for(int j = 140 ;j<=140 ;j+=10)
+    for (int i = 50; i <= 60; i += 10)
+        for (int j = 140; j <= 140; j += 10)
             AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
 
 }
 
 void TutorialGame::EndGame() {
 
-    world->GetMainCamera().SetPosition(Vector3(0, 0, 0));
-
-    if(player->win) {
+    world->GetMainCamera()->SetPosition(Vector3(0, 0, 0));
+    cameraMain->enableInput = false;
+    cameraFollow->enableInput = false;
+    if (player->win) {
         std::string tit = "You Win!!!";
-        Debug::Print(tit, Vector2(30, 40),Debug::RED);
+        Debug::Print(tit, Vector2(30, 40), Debug::RED);
 
-    }else{
+    } else {
         std::string tit = "You Lose!!! ";
-        Debug::Print(tit, Vector2(30, 40),Debug::RED);
+        Debug::Print(tit, Vector2(30, 40), Debug::RED);
     }
 
 
