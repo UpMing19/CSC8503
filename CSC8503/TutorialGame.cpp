@@ -105,6 +105,7 @@ void TutorialGame::UpdateGame(float dt) {
     if (!inSelectionMode) {
         world->GetMainCamera().UpdateCamera(dt);
     }
+
     if (lockedObject != nullptr) {
         Vector3 objPos = lockedObject->GetTransform().GetPosition();
         Vector3 camPos = objPos + lockedOffset;
@@ -185,7 +186,9 @@ void TutorialGame::UpdateGame(float dt) {
 
 
     }
-
+    std::cout<<"distance:"<<fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length())<<std::endl;
+    if(fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length()) < 9.0f)
+        player->lose = true;
 
     if (player->win || player->lose) {
         world->UpdateWorld(dt);
@@ -872,6 +875,16 @@ void TutorialGame::InitGameToolsObject() {
 void TutorialGame::EndGame() {
 
     world->GetMainCamera().SetPosition(Vector3(0, 0, 0));
+
+    if(player->win) {
+        std::string tit = "You Win!!!";
+        Debug::Print(tit, Vector2(30, 40),Debug::RED);
+
+    }else{
+        std::string tit = "You Lose!!! ";
+        Debug::Print(tit, Vector2(30, 40),Debug::RED);
+    }
+
 
     std::string score = "Score = ";
     score.append(std::to_string(player->score));
