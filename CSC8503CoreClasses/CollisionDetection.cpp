@@ -425,19 +425,19 @@ Matrix4 GenerateInverseProjection(float aspect, float nearPlane, float farPlane,
     return m;
 }
 
-Vector3 CollisionDetection::Unproject(const Vector3 &screenPos, const PerspectiveCamera &cam) {
+Vector3 CollisionDetection::Unproject(const Vector3& screenPos, const Camera& cam) {
     Vector2i screenSize = Window::GetWindow()->GetScreenSize();
 
-    float aspect = (float) screenSize.x / (float) screenSize.y;
-    float fov = cam.GetFieldOfVision();
+    float aspect	= screenSize.x / screenSize.y;
+    float fov		= cam.GetFieldOfVision();
     float nearPlane = cam.GetNearPlane();
-    float farPlane = cam.GetFarPlane();
+    float farPlane  = cam.GetFarPlane();
 
     //Create our inverted matrix! Note how that to get a correct inverse matrix,
     //the order of matrices used to form it are inverted, too.
     Matrix4 invVP = GenerateInverseView(cam) * GenerateInverseProjection(aspect, fov, nearPlane, farPlane);
 
-    Matrix4 proj = cam.BuildProjectionMatrix(aspect);
+    Matrix4 proj  = cam.BuildProjectionMatrix(aspect);
 
     //Our mouse position x and y values are in 0 to screen dimensions range,
     //so we need to turn them into the -1 to 1 axis range of clip space.
@@ -445,8 +445,8 @@ Vector3 CollisionDetection::Unproject(const Vector3 &screenPos, const Perspectiv
     //screen (giving us a range of 0.0 to 1.0), multiplying by 2 (0.0 to 2.0)
     //and then subtracting 1 (-1.0 to 1.0).
     Vector4 clipSpace = Vector4(
-            (screenPos.x / (float) screenSize.x) * 2.0f - 1.0f,
-            (screenPos.y / (float) screenSize.y) * 2.0f - 1.0f,
+            (screenPos.x / (float)screenSize.x) * 2.0f - 1.0f,
+            (screenPos.y / (float)screenSize.y) * 2.0f - 1.0f,
             (screenPos.z),
             1.0f
     );
@@ -459,7 +459,35 @@ Vector3 CollisionDetection::Unproject(const Vector3 &screenPos, const Perspectiv
     return Vector3(transformed.x / transformed.w, transformed.y / transformed.w, transformed.z / transformed.w);
 }
 
-Ray CollisionDetection::BuildRayFromMouse(const PerspectiveCamera &cam) {
+Ray CollisionDetection::BuildRayFromMouse(const Camera& cam) {
+    Vector2 screenMouse = Window::GetMouse()->GetAbsolutePosition();
+    Vector2i screenSize	= Window::GetWindow()->GetScreenSize();
+
+    //We remove the y axis mouse position from height as OpenGL is 'upside down',
+    //and thinks the bottom left is the origin, instead of the top left!
+    Vector3 nearPos = Vector3(screenMouse.x,
+                              screenSize.y - screenMouse.y,
+                              -0.99999f
+    );
+
+    //We also don't use exactly 1.0 (the normalised 'end' of the far plane) as this
+    //causes the unproject function to go a bit weird.
+    Vector3 farPos = Vector3(screenMouse.x,
+                             screenSize.y - screenMouse.y,
+                             0.99999f
+    );
+
+    Vector3 a = Unproject(nearPos, cam);
+    Vector3 b = Unproject(farPos, cam);
+    Vector3 c = b - a;
+
+    c.Normalise();
+
+    return Ray(cam.GetPosition(), c);
+}
+
+Ray CollisionDetection::BuildRayFromMouse(const Camera& cam, const Vector3& offset)
+{
     Vector2 screenMouse = Window::GetMouse()->GetAbsolutePosition();
     Vector2i screenSize = Window::GetWindow()->GetScreenSize();
 
@@ -483,7 +511,7 @@ Ray CollisionDetection::BuildRayFromMouse(const PerspectiveCamera &cam) {
 
     c.Normalise();
 
-    return Ray(cam.GetPosition(), c);
+    return Ray(cam.GetPosition() + offset, c);
 }
 
 //http://bookofhook.com/mousepick.pdf
@@ -548,12 +576,10 @@ So, to form the inverted matrix, we need the aspect and fov used to create the
 projection matrix of our scene, and the camera used to form the view matrix.
 
 */
-Vector3
-CollisionDetection::UnprojectScreenPosition(Vector3 position, float aspect, float fov, const PerspectiveCamera &c) {
+Vector3	CollisionDetection::UnprojectScreenPosition(Vector3 position, float aspect, float fov, const Camera &c) {
     //Create our inverted matrix! Note how that to get a correct inverse matrix,
     //the order of matrices used to form it are inverted, too.
-    Matrix4 invVP =
-            GenerateInverseView(c) * GenerateInverseProjection(aspect, fov, c.GetNearPlane(), c.GetFarPlane());
+    Matrix4 invVP = GenerateInverseView(c) * GenerateInverseProjection(aspect, fov, c.GetNearPlane(), c.GetFarPlane());
 
     Vector2i screenSize = Window::GetWindow()->GetScreenSize();
 
@@ -563,8 +589,8 @@ CollisionDetection::UnprojectScreenPosition(Vector3 position, float aspect, floa
     //screen (giving us a range of 0.0 to 1.0), multiplying by 2 (0.0 to 2.0)
     //and then subtracting 1 (-1.0 to 1.0).
     Vector4 clipSpace = Vector4(
-            (position.x / (float) screenSize.x) * 2.0f - 1.0f,
-            (position.y / (float) screenSize.y) * 2.0f - 1.0f,
+            (position.x / (float)screenSize.x) * 2.0f - 1.0f,
+            (position.y / (float)screenSize.y) * 2.0f - 1.0f,
             (position.z) - 1.0f,
             1.0f
     );

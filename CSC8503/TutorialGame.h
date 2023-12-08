@@ -7,7 +7,7 @@
 #ifdef USEVULKAN
 #include "GameTechVulkanRenderer.h"
 #endif
-
+#include "CWFollowCamera.h"
 #include "PhysicsSystem.h"
 #include "NavigationGrid.h"
 #include "StateGameObject.h"
@@ -131,7 +131,7 @@ namespace NCL {
 
             //Coursework Additional functionality
             GameObject *lockedObject = nullptr;
-            Vector3 lockedOffset = Vector3(0, 14, 20);
+            Vector3 lockedOffset = Vector3(0, 20,30);
 
             void LockCameraToObject(GameObject *o) {
                 lockedObject = o;
@@ -150,6 +150,9 @@ namespace NCL {
 
             GameEnemyObject *EnemyObject = nullptr;
 
+            Camera* cameraMain;
+            CWFollowCamera* cameraFollow;
+            Vector3 startCameraPos = Vector3(512.0f, 40.0f, 512.0f);
         };
     }
 }

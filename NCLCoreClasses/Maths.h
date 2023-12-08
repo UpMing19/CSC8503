@@ -28,6 +28,17 @@ namespace NCL::Maths {
 		return degs * PI / 180.0f;
 	};
 
+    template<class T>
+    inline T Clamp(T value, T min, T max) {
+        if (value < min) {
+            return min;
+        }
+        if (value > max) {
+            return max;
+        }
+        return value;
+    }
+
 	float RandomValue(float min, float max);
 
 	void ScreenBoxOfTri(const Vector3& v0, const Vector3& v1, const Vector3& v2, Vector2& topLeft, Vector2& bottomRight);
