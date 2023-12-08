@@ -37,6 +37,6 @@ PushdownState::PushdownResult InitWorldState::OnUpdate(float dt, PushdownState *
 }
 
 void InitWorldState::OnAwake() {
-    g->InitCamera();
     g->InitWorld();
+    g->InitCamera();
 }

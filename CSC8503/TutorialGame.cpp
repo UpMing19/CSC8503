@@ -113,7 +113,7 @@ void TutorialGame::UpdateGame(float dt) {
             world->SetMainCamera(cameraMain);
         else
         {
-            lockedObject = player;
+            lockedObject  = selectionObject = player;
             world->SetMainCamera(cameraFollow);
             inSelectionMode = false;
             Window::GetWindow()->ShowOSPointer(false);
@@ -122,7 +122,6 @@ void TutorialGame::UpdateGame(float dt) {
     }
 
 
-    world->GetMainCamera()->UpdateCamera(dt);
 
 
     UpdateKeys();
@@ -345,7 +344,6 @@ void TutorialGame::InitCamera() {
     world->GetMainCamera()->SetFarPlane(15000.0f);
     world->GetMainCamera()->SetPitch(0.0f);
     world->GetMainCamera()->SetYaw(0.0f);
-
     world->GetMainCamera()->SetPosition(startCameraPos);
 
     cameraMain->enableInput = true;
