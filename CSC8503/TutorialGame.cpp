@@ -265,7 +265,7 @@ void TutorialGame::LockedObjectMovement() {
 
         forwardDirection.Normalise();
 
-        float forceMagnitude = 15.0f;
+        float forceMagnitude = 45.0f;
         selectionObject->GetPhysicsObject()->AddForce(forwardDirection * forceMagnitude);
     }
 
@@ -275,16 +275,16 @@ void TutorialGame::LockedObjectMovement() {
         Vector3 backwardDirection = pigOrientation * Vector3(0, 0, 1);
         backwardDirection.Normalise();
 
-        float forceMagnitude = 15.0f;
+        float forceMagnitude = 45.0f;
         selectionObject->GetPhysicsObject()->AddForce(backwardDirection * forceMagnitude);
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
-        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 1, 0));
+        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 4, 0));
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
-        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -1, 0));
+        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -4, 0));
     }
 
 
@@ -748,7 +748,7 @@ void TutorialGame::InitMazeWorld() {
     for (int y = 0; y < grid->GetHeight(); y++) {
         for (int x = 0; x < grid->GetWidth(); x++) {
             if (gridSquare[y][x] == 120) {
-                AddCubeToWorld(Vector3(x * size, -10, y * size), Vector3(size / 2, size / 2, size / 2), 0.0f);
+                AddCubeToWorld(Vector3(x * size, -14, y * size), Vector3(size / 2, size / 2, size / 2), 0.0f);
             }
         }
     }
@@ -769,7 +769,7 @@ void TutorialGame::InitGamePlayerObject() {
     player = new GamePlayerObject();
     player->SetName("player");
 
-    SphereVolume *volume = new SphereVolume(2.0f);
+    SphereVolume *volume = new SphereVolume(4.0f);
     player->SetBoundingVolume((CollisionVolume *) volume);
 
     player->GetTransform()
@@ -783,6 +783,7 @@ void TutorialGame::InitGamePlayerObject() {
     player->GetPhysicsObject()->SetInverseMass(inverseMass);
     player->GetPhysicsObject()->InitSphereInertia();
 
+    player->GetRenderObject()->SetColour(Debug::MAGENTA);
     world->AddGameObject(player);
 
 }

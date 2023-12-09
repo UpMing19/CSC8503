@@ -16,7 +16,7 @@ std::vector<Vector3> patrolPoints = {
 };
 
 void InitializePatrolPoints() {
-    const int numPoints = 4; // 生成巡逻点的数量
+    const int numPoints = 4;
 
     patrolPoints.push_back(Vector3(340, -12, 250));
     patrolPoints.push_back(Vector3(380, -12, 120));
@@ -26,7 +26,6 @@ void InitializePatrolPoints() {
 
 }
 
-// 当前目标巡逻点的索引
 int currentPatrolIndex = 0;
 
 GameEnemyObject::GameEnemyObject(NavigationGrid *grid, GamePlayerObject *gameObject) {
@@ -39,10 +38,6 @@ GameEnemyObject::GameEnemyObject(NavigationGrid *grid, GamePlayerObject *gameObj
     srand(time(NULL));
 
     InitializePatrolPoints();
-//    State *patrol = new State([&](float dt) -> void {
-//        this->GetPhysicsObject()->ClearForces();
-//        this->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
-//    });
 
     State *patrol = new State([&](float dt) -> void {
         auto physObject = this->GetPhysicsObject();
