@@ -355,7 +355,7 @@ void TutorialGame::InitWorld() {
     InitGamePlayerObject();
     InitGameToolsObject();
     EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
-    GooseObject = AddGameGooseObject(Vector3(210, -11, 220));
+    GooseObject = AddGameGooseObject(Vector3(220, -11, 190));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
     cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280), cylinderMesh);
 
@@ -537,58 +537,6 @@ void TutorialGame::InitDefaultFloor() {
     AddFloorToWorld(Vector3(200, -20, 200), "floor");
 }
 
-void TutorialGame::InitGameExamples() {
-    AddPlayerToWorld(Vector3(0, 5, 0));
-    AddEnemyToWorld(Vector3(5, 5, 0));
-    //AddBonusToWorld(Vector3(10, 5, 0));
-
-
-}
-
-void TutorialGame::InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius) {
-    for (int x = 0; x < numCols; ++x) {
-        for (int z = 0; z < numRows; ++z) {
-            Vector3 position = Vector3(x * colSpacing, 10.0f, z * rowSpacing);
-            AddSphereToWorld(position, radius, 1.0f);
-        }
-    }
-    //AddFloorToWorld(Vector3(0, -2, 0));
-}
-
-void TutorialGame::InitMixedGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing) {
-    float sphereRadius = 1.0f;
-    Vector3 cubeDims = Vector3(1, 1, 1);
-
-    for (int x = 0; x < numCols; ++x) {
-        for (int z = 0; z < numRows; ++z) {
-            Vector3 position = Vector3(x * colSpacing, 10.0f, z * rowSpacing);
-
-            if (rand() % 2) {
-                AddCubeToWorld(position, cubeDims);
-            } else {
-                AddSphereToWorld(position, sphereRadius);
-            }
-        }
-    }
-}
-
-void
-TutorialGame::InitCubeGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, const Vector3 &cubeDims) {
-    for (int x = 1; x < numCols + 1; ++x) {
-        for (int z = 1; z < numRows + 1; ++z) {
-            Vector3 position = Vector3(x * colSpacing, 10.0f, z * rowSpacing);
-            AddCubeToWorld(position, cubeDims, 1.0f);
-        }
-    }
-}
-
-/*
-Every frame, this code will let you perform a raycast, to see if there's an object
-underneath the cursor, and if so 'select it' into a pointer, so that it can be 
-manipulated later. Pressing Q will let you toggle between this behaviour and instead
-letting you move the camera around. 
-
-*/
 bool TutorialGame::SelectObject() {
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
         inSelectionMode = !inSelectionMode;
@@ -810,6 +758,9 @@ void TutorialGame::InitGameToolsObject() {
     for (int i = 50; i <= 60; i += 10)
         for (int j = 140; j <= 140; j += 10)
             AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+
+
+    AddSphereToWorld(Vector3(170,-15,180),2.0f,0,"keyTools");
 
 }
 

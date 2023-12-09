@@ -15,10 +15,10 @@ using namespace CSC8503;
 void GameGooseObject::InitializePatrolPoints() {
     const int numPoints = 4;
 
-    patrolPoints.push_back(Vector3(210, -11, 220));
-    patrolPoints.push_back(Vector3(140, -11, 220));
-    patrolPoints.push_back(Vector3(140, -11, 150));
-    patrolPoints.push_back(Vector3(210, -11, 150));
+    patrolPoints.push_back(Vector3(220, -11, 240));
+    patrolPoints.push_back(Vector3(130, -11, 240));
+    patrolPoints.push_back(Vector3(130, -11, 140));
+    patrolPoints.push_back(Vector3(220, -11, 140));
 
 
 }
@@ -32,9 +32,8 @@ GameGooseObject::GameGooseObject(NavigationGrid *grid, GamePlayerObject *gameObj
     this->stateMachine = new StateMachine();
     counter = 20.0f;
 
-    srand(time(NULL));
-
     InitializePatrolPoints();
+    currentPatrolIndex = 0;
 
     State *patrol = new State([&](float dt) -> void {
         auto physObject = this->GetPhysicsObject();
@@ -80,16 +79,12 @@ GameGooseObject::~GameGooseObject() {
 }
 
 void GameGooseObject::Update(float dt) {
-    if (counter > 2.0f) {
-        CalculatePath();
-        counter = 0.0f;
-    }
     stateMachine->Update(dt);
-    counter += dt;
 }
 
 
 void GameGooseObject::MoveToTarget(float dt) {
+    CalculatePath();
 
     if (pathToTarget.size() > 0) {
         auto it = pathToTarget.begin();
