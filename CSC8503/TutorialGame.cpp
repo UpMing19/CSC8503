@@ -106,23 +106,18 @@ void TutorialGame::UpdateGame(float dt) {
     world->GetMainCamera()->UpdateCamera(dt);
 
 
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q))
-    {
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
         inSelectionMode = !inSelectionMode;
         if (inSelectionMode)
             world->SetMainCamera(cameraMain);
-        else
-        {
-            lockedObject  = selectionObject = player;
+        else {
+            lockedObject = selectionObject = player;
             world->SetMainCamera(cameraFollow);
             inSelectionMode = false;
             Window::GetWindow()->ShowOSPointer(false);
             Window::GetWindow()->LockMouseToWindow(true);
         }
     }
-
-
-
 
     UpdateKeys();
 
@@ -179,7 +174,6 @@ void TutorialGame::UpdateGame(float dt) {
     }
 
 
-
     if (useGravity) {
         Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
     } else {
@@ -191,14 +185,11 @@ void TutorialGame::UpdateGame(float dt) {
     physics->Update(dt);
 
     if (testStateObject && cylinderStateObject) {
-        //std::cout<<"debug"<<std::endl;
         cylinderStateObject->Update(dt);
         testStateObject->Update(dt);
     }
-    if (EnemyObject != nullptr) {
-        EnemyObject->Update(dt);
-    }
-
+    if (EnemyObject != nullptr) EnemyObject->Update(dt);
+    if (GooseObject != nullptr) GooseObject->Update(dt);
 
     renderer->Render();
     Debug::UpdateRenderables(dt);
@@ -268,7 +259,7 @@ void TutorialGame::LockedObjectMovement() {
 
         forwardDirection.Normalise();
 
-        float forceMagnitude = 15.0f;
+        float forceMagnitude = 45.0f;
         selectionObject->GetPhysicsObject()->AddForce(forwardDirection * forceMagnitude);
     }
 
@@ -278,16 +269,16 @@ void TutorialGame::LockedObjectMovement() {
         Vector3 backwardDirection = pigOrientation * Vector3(0, 0, 1);
         backwardDirection.Normalise();
 
-        float forceMagnitude = 15.0f;
+        float forceMagnitude = 45.0f;
         selectionObject->GetPhysicsObject()->AddForce(backwardDirection * forceMagnitude);
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
-        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 1, 0));
+        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 4, 0));
     }
 
     if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
-        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -1, 0));
+        selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -4, 0));
     }
 
 
@@ -337,7 +328,7 @@ void TutorialGame::InitCamera() {
         return;
 
     if (cameraFollow == nullptr)
-        cameraFollow = new CWFollowCamera(*world, *player);
+        cameraFollow = new GamePlayerFollowCamera(*world, *player);
 
     world->SetMainCamera(cameraFollow);
     world->GetMainCamera()->SetNearPlane(0.1f);
@@ -364,6 +355,7 @@ void TutorialGame::InitWorld() {
     InitGamePlayerObject();
     InitGameToolsObject();
     EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
+    GooseObject = AddGameGooseObject(Vector3(220, -11, 190));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
     cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280), cylinderMesh);
 
@@ -545,58 +537,6 @@ void TutorialGame::InitDefaultFloor() {
     AddFloorToWorld(Vector3(200, -20, 200), "floor");
 }
 
-void TutorialGame::InitGameExamples() {
-    AddPlayerToWorld(Vector3(0, 5, 0));
-    AddEnemyToWorld(Vector3(5, 5, 0));
-    //AddBonusToWorld(Vector3(10, 5, 0));
-
-
-}
-
-void TutorialGame::InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius) {
-    for (int x = 0; x < numCols; ++x) {
-        for (int z = 0; z < numRows; ++z) {
-            Vector3 position = Vector3(x * colSpacing, 10.0f, z * rowSpacing);
-            AddSphereToWorld(position, radius, 1.0f);
-        }
-    }
-    //AddFloorToWorld(Vector3(0, -2, 0));
-}
-
-void TutorialGame::InitMixedGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing) {
-    float sphereRadius = 1.0f;
-    Vector3 cubeDims = Vector3(1, 1, 1);
-
-    for (int x = 0; x < numCols; ++x) {
-        for (int z = 0; z < numRows; ++z) {
-            Vector3 position = Vector3(x * colSpacing, 10.0f, z * rowSpacing);
-
-            if (rand() % 2) {
-                AddCubeToWorld(position, cubeDims);
-            } else {
-                AddSphereToWorld(position, sphereRadius);
-            }
-        }
-    }
-}
-
-void
-TutorialGame::InitCubeGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, const Vector3 &cubeDims) {
-    for (int x = 1; x < numCols + 1; ++x) {
-        for (int z = 1; z < numRows + 1; ++z) {
-            Vector3 position = Vector3(x * colSpacing, 10.0f, z * rowSpacing);
-            AddCubeToWorld(position, cubeDims, 1.0f);
-        }
-    }
-}
-
-/*
-Every frame, this code will let you perform a raycast, to see if there's an object
-underneath the cursor, and if so 'select it' into a pointer, so that it can be 
-manipulated later. Pressing Q will let you toggle between this behaviour and instead
-letting you move the camera around. 
-
-*/
 bool TutorialGame::SelectObject() {
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
         inSelectionMode = !inSelectionMode;
@@ -751,7 +691,7 @@ void TutorialGame::InitMazeWorld() {
     for (int y = 0; y < grid->GetHeight(); y++) {
         for (int x = 0; x < grid->GetWidth(); x++) {
             if (gridSquare[y][x] == 120) {
-                AddCubeToWorld(Vector3(x * size, -10, y * size), Vector3(size / 2, size / 2, size / 2), 0.0f);
+                AddCubeToWorld(Vector3(x * size, -14, y * size), Vector3(size / 2, size / 2, size / 2), 0.0f);
             }
         }
     }
@@ -772,7 +712,7 @@ void TutorialGame::InitGamePlayerObject() {
     player = new GamePlayerObject();
     player->SetName("player");
 
-    SphereVolume *volume = new SphereVolume(2.0f);
+    SphereVolume *volume = new SphereVolume(4.0f);
     player->SetBoundingVolume((CollisionVolume *) volume);
 
     player->GetTransform()
@@ -786,6 +726,7 @@ void TutorialGame::InitGamePlayerObject() {
     player->GetPhysicsObject()->SetInverseMass(inverseMass);
     player->GetPhysicsObject()->InitSphereInertia();
 
+    player->GetRenderObject()->SetColour(Debug::MAGENTA);
     world->AddGameObject(player);
 
 }
@@ -817,6 +758,9 @@ void TutorialGame::InitGameToolsObject() {
     for (int i = 50; i <= 60; i += 10)
         for (int j = 140; j <= 140; j += 10)
             AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
+
+
+    AddSphereToWorld(Vector3(170,-15,180),2.0f,0,"keyTools");
 
 }
 
@@ -879,6 +823,34 @@ GameEnemyObject *TutorialGame::AddGameEnemyObject(Vector3 position) {
 
     world->AddGameObject(character);
     //enemies.emplace_back(character);
+
+    return character;
+}
+
+GameGooseObject *TutorialGame::AddGameGooseObject(Vector3 position) {
+    float meshSize = 7.0f;
+    float inverseMass = 5.0f;
+
+    GameGooseObject *character = new GameGooseObject(grid, player);
+
+    character->SetName("GoosePlayer");
+    AABBVolume *volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
+    character->SetBoundingVolume((CollisionVolume *) volume);
+
+    character->GetTransform()
+            .SetScale(Vector3(meshSize, meshSize, meshSize))
+            .SetPosition(position);
+
+    character->SetRenderObject(new RenderObject(&character->GetTransform(), gooseMesh, nullptr, basicShader));
+    character->GetRenderObject()->SetColour(Vector4(0.75, 0, 0, 1));
+    character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
+
+    character->GetPhysicsObject()->SetInverseMass(inverseMass);
+    character->GetPhysicsObject()->InitSphereInertia();
+
+
+    world->AddGameObject(character);
+
 
     return character;
 }
