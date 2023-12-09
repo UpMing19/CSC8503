@@ -12,8 +12,10 @@ set(Header_Files
         "MenuStates.h"
         "GamePlayerObject.h"
         "GameEnemyObject.h"
+        "GameGooseObject.h"
         "CylinderStateGameObject.h"
         "GamePlayerFollowCamera.h"
+
 )
 source_group("Header Files" FILES ${Header_Files})
 
@@ -27,6 +29,7 @@ set(Source_Files
         "MenuStates.cpp"
         "GamePlayerObject.cpp"
         "GameEnemyObject.cpp"
+        "GameGooseObject.cpp"
         "CylinderStateGameObject.cpp"
         "GamePlayerFollowCamera.cpp"
 )

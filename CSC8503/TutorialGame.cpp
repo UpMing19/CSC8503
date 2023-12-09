@@ -106,14 +106,12 @@ void TutorialGame::UpdateGame(float dt) {
     world->GetMainCamera()->UpdateCamera(dt);
 
 
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q))
-    {
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
         inSelectionMode = !inSelectionMode;
         if (inSelectionMode)
             world->SetMainCamera(cameraMain);
-        else
-        {
-            lockedObject  = selectionObject = player;
+        else {
+            lockedObject = selectionObject = player;
             world->SetMainCamera(cameraFollow);
             inSelectionMode = false;
             Window::GetWindow()->ShowOSPointer(false);
@@ -176,7 +174,6 @@ void TutorialGame::UpdateGame(float dt) {
     }
 
 
-
     if (useGravity) {
         Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
     } else {
@@ -188,14 +185,11 @@ void TutorialGame::UpdateGame(float dt) {
     physics->Update(dt);
 
     if (testStateObject && cylinderStateObject) {
-        //std::cout<<"debug"<<std::endl;
         cylinderStateObject->Update(dt);
         testStateObject->Update(dt);
     }
-    if (EnemyObject != nullptr) {
-        EnemyObject->Update(dt);
-    }
-
+    if (EnemyObject != nullptr) EnemyObject->Update(dt);
+    if (GooseObject != nullptr) GooseObject->Update(dt);
 
     renderer->Render();
     Debug::UpdateRenderables(dt);
@@ -361,6 +355,7 @@ void TutorialGame::InitWorld() {
     InitGamePlayerObject();
     InitGameToolsObject();
     EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
+    GooseObject = AddGameGooseObject(Vector3(210, -11, 220));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
     cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280), cylinderMesh);
 
@@ -877,6 +872,34 @@ GameEnemyObject *TutorialGame::AddGameEnemyObject(Vector3 position) {
 
     world->AddGameObject(character);
     //enemies.emplace_back(character);
+
+    return character;
+}
+
+GameGooseObject *TutorialGame::AddGameGooseObject(Vector3 position) {
+    float meshSize = 7.0f;
+    float inverseMass = 5.0f;
+
+    GameGooseObject *character = new GameGooseObject(grid, player);
+
+    character->SetName("GoosePlayer");
+    AABBVolume *volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
+    character->SetBoundingVolume((CollisionVolume *) volume);
+
+    character->GetTransform()
+            .SetScale(Vector3(meshSize, meshSize, meshSize))
+            .SetPosition(position);
+
+    character->SetRenderObject(new RenderObject(&character->GetTransform(), gooseMesh, nullptr, basicShader));
+    character->GetRenderObject()->SetColour(Vector4(0.75, 0, 0, 1));
+    character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
+
+    character->GetPhysicsObject()->SetInverseMass(inverseMass);
+    character->GetPhysicsObject()->InitSphereInertia();
+
+
+    world->AddGameObject(character);
+
 
     return character;
 }

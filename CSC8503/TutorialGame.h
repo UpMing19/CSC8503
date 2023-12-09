@@ -3,10 +3,11 @@
 #pragma once
 
 #include "GameTechRenderer.h"
-
+#include "GameGooseObject.h"
 #ifdef USEVULKAN
 #include "GameTechVulkanRenderer.h"
 #endif
+
 #include "GamePlayerFollowCamera.h"
 #include "PhysicsSystem.h"
 #include "NavigationGrid.h"
@@ -64,7 +65,7 @@ namespace NCL {
             GameObject *AddFloorToWorld(const Vector3 &position, std::string name = "uname");
 
             GameObject *AddCoinToWorldWithColor(const Vector3 &position, float radius, float inverseMass = 10.0f,
-                                                  std::string name = "uname", Vector4 color = Vector4(1, 1, 1, 1));
+                                                std::string name = "uname", Vector4 color = Vector4(1, 1, 1, 1));
 
             GameObject *AddSphereToWorld(const Vector3 &position, float radius, float inverseMass = 10.0f,
                                          std::string name = "uname");
@@ -79,7 +80,8 @@ namespace NCL {
             GameObject *AddBonusToWorld(const Vector3 &position, std::string name = "uname");
 
             StateGameObject *AddStateObjectToWorld(const Vector3 &position);
-            CylinderStateGameObject *AddStateObjectToWorld(const Vector3 &position,Mesh* mesh);
+
+            CylinderStateGameObject *AddStateObjectToWorld(const Vector3 &position, Mesh *mesh);
 
             StateGameObject *testStateObject = nullptr;
             CylinderStateGameObject *cylinderStateObject = nullptr;
@@ -91,10 +93,12 @@ namespace NCL {
 
             void InitGamePlayerObject();
 
+
             void InitGameToolsObject();
 
             void EndGame();
 
+            GameGooseObject *AddGameGooseObject(Vector3 position);
             GameEnemyObject *AddGameEnemyObject(Vector3 position);
 
 #ifdef USEVULKAN
@@ -131,7 +135,7 @@ namespace NCL {
 
             //Coursework Additional functionality
             GameObject *lockedObject = nullptr;
-            Vector3 lockedOffset = Vector3(0, 20,30);
+            Vector3 lockedOffset = Vector3(0, 20, 30);
 
             void LockCameraToObject(GameObject *o) {
                 lockedObject = o;
@@ -149,9 +153,10 @@ namespace NCL {
 
 
             GameEnemyObject *EnemyObject = nullptr;
+            GameGooseObject *GooseObject = nullptr;
 
-            Camera* cameraMain;
-            GamePlayerFollowCamera* cameraFollow;
+            Camera *cameraMain;
+            GamePlayerFollowCamera *cameraFollow;
             Vector3 startCameraPos = Vector3(512.0f, 40.0f, 512.0f);
         };
     }
