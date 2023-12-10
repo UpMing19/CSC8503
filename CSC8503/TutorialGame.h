@@ -154,6 +154,7 @@ namespace NCL {
 
             GameEnemyObject *EnemyObject = nullptr;
             GameGooseObject *GooseObject = nullptr;
+            GameObject *KeyObject = nullptr;
 
             Camera *cameraMain;
             GamePlayerFollowCamera *cameraFollow;

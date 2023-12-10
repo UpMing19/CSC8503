@@ -24,8 +24,8 @@ void GamePlayerObject::OnCollisionBegin(NCL::CSC8503::GameObject *otherObject) {
         itemsLeft--;
     }
     if (name == "player" && otherObject->GetName() == "keyTools") {
-        otherObject->SetIsActive(false);
-        otherObject->SetBoundingVolume(nullptr);
+       // otherObject->SetIsActive(false);
+       // otherObject->SetBoundingVolume(nullptr);
         keyNum++;
     }
 }
