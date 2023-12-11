@@ -87,7 +87,7 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-
+    //player->keyNum = 1;
     if (menu) {
         world->GetMainCamera()->SetPosition(Vector3(0, 0, 0));
         Debug::Print("1. Start Game ", Vector2(30, 40), Debug::GREEN);

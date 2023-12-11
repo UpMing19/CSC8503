@@ -43,9 +43,9 @@ GameGooseObject::GameGooseObject(NavigationGrid *grid, GamePlayerObject *gameObj
         Vector3 targetPos = patrolPoints[currentPatrolIndex];
         if ((targetPos - currentPos).LengthSquared() < 1.0f) {
 
-            currentPatrolIndex++;// 获取一个随机的路线点索引
+            currentPatrolIndex++;
             currentPatrolIndex %= 4;
-            targetPos = patrolPoints[currentPatrolIndex]; // 更新目标点
+            targetPos = patrolPoints[currentPatrolIndex];
         }
         Vector3 direction = (targetPos - currentPos).Normalised();
 
@@ -67,9 +67,9 @@ GameGooseObject::GameGooseObject(NavigationGrid *grid, GamePlayerObject *gameObj
         return target->keyNum;
     }));
 
-//    stateMachine->AddTransition(new StateTransition(chase, patrol, [&]() -> bool {
-//        return target->keyNum;
-//    }));
+    stateMachine->AddTransition(new StateTransition(chase, patrol, [&]() -> bool {
+        return (target->keyNum==0);
+    }));
 
 
 }
@@ -79,8 +79,12 @@ GameGooseObject::~GameGooseObject() {
 }
 
 void GameGooseObject::Update(float dt) {
-    CalculatePath();
+    if (counter > 2.0f) {
+        CalculatePath();
+        counter = 0.0f;
+    }
     stateMachine->Update(dt);
+    counter += dt;
 }
 
 
@@ -90,20 +94,24 @@ void GameGooseObject::MoveToTarget(float dt) {
         auto it = pathToTarget.begin();
         Vector3 target = *it;
         Vector3 dir = (target - this->GetTransform().GetPosition());
+   //     std::cout<<"this->GetTransform().GetPosition():"<<this->GetTransform().GetPosition()<<std::endl;
         dir = Vector3(dir.x, 0, dir.z);
-        GetPhysicsObject()->SetLinearVelocity(dir.Normalised() * 500.0f * dt);
-
-        if (dir.Length() <= 2.0f) {
-            pathToTarget.erase(it);
-            GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
-        }
+        GetPhysicsObject()->SetLinearVelocity(dir.Normalised() * 1000.0f * dt);
+        pathToTarget.erase(it);
+//        if (dir.Length() <= 2.0f) {
+//            pathToTarget.erase(it);
+//            GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
+//        }
     }
 }
 
 void GameGooseObject::CalculatePath() {
+ //   Vector3 dir = this->GetTransform().GetPosition();
+  //  std::cout<<"this->GetTransform().GetPosition():"<<this->GetTransform().GetPosition()<<std::endl;
     pathToTarget.clear();
     NavigationPath outPath;
-    bool found = grid->FindPath(GetTransform().GetPosition(), Vector3(220,-11,240), outPath);
+    bool found = grid->FindPath(GetTransform().GetPosition(), target->GetTransform().GetPosition(), outPath);
+ //   bool found = grid->FindPath(GetTransform().GetPosition(), Vector3(220,-11,240), outPath);
     Vector3 pos;
     while (outPath.PopWaypoint(pos)) {
         pathToTarget.push_back(pos);
