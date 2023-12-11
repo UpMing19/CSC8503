@@ -158,9 +158,9 @@ void TutorialGame::UpdateGame(float dt) {
 
 
     }
-    std::cout << "distance:"
-              << fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length())
-              << std::endl;
+//    std::cout << "distance:"
+//              << fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length())
+//              << std::endl;
     if (fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length()) < 9.0f)
         player->lose = true;
 
@@ -191,7 +191,7 @@ void TutorialGame::UpdateGame(float dt) {
     if (EnemyObject != nullptr) EnemyObject->Update(dt);
     if (GooseObject != nullptr) GooseObject->Update(dt);
 
-    if(player->keyNum) BridgeConstraintTest();
+    if (player->keyNum) BridgeConstraintTest();
 
     renderer->Render();
     Debug::UpdateRenderables(dt);
@@ -463,6 +463,29 @@ TutorialGame::AddCubeToWorld(const Vector3 &position, Vector3 dimensions, float 
 
     world->AddGameObject(cube);
 
+    return cube;
+}
+
+GameObject *
+TutorialGame::AddGameDoorObject(NCL::Maths::Vector3 position, NCL::Maths::Vector3 dimensions, float inverseMass,
+                                std::string name) {
+    GameObject *cube = new GameObject(name);
+
+    AABBVolume *volume = new AABBVolume(dimensions);
+    cube->SetBoundingVolume((CollisionVolume *) volume);
+
+    cube->GetTransform()
+            .SetPosition(position)
+            .SetScale(dimensions * 2);
+
+    cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
+    cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+
+    cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+    cube->GetPhysicsObject()->InitCubeInertia();
+
+    world->AddGameObject(cube);
+    cube->GetRenderObject()->SetColour(Debug::MAGENTA);
     return cube;
 }
 
@@ -745,7 +768,9 @@ void TutorialGame::InitGameToolsObject() {
             AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
 
 
-    KeyObject = AddSphereToWorld(Vector3(170,-15,180),2.0f,200.0,"keyTools");
+    KeyObject = AddSphereToWorld(Vector3(170, -15, 180), 2.0f, 200.0, "keyTools");
+
+    GameObject *doorObject = AddGameDoorObject(Vector3(180, -15, 348), Vector3(30, 10 / 2, 1.0f), 0.0f, "Door");
 
 }
 
