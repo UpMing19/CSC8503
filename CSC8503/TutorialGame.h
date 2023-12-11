@@ -72,7 +72,8 @@ namespace NCL {
 
             GameObject *AddCubeToWorld(const Vector3 &position, Vector3 dimensions, float inverseMass = 10.0f,
                                        std::string name = "uname");
-
+            GameObject *AddEndPointToWorld(const Vector3 &position, Vector3 dimensions, float inverseMass = 0.0f,
+                                       std::string name = "endPoint");
             GameObject *AddPlayerToWorld(const Vector3 &position, std::string name = "uname");
 
             GameObject *AddEnemyToWorld(const Vector3 &position, std::string name = "uname");
@@ -123,6 +124,8 @@ namespace NCL {
             Mesh *cubeMesh = nullptr;
             Mesh *sphereMesh = nullptr;
             Mesh *coinMesh = nullptr;
+            Mesh *highrise = nullptr;
+
 
             Texture *basicTex = nullptr;
             Shader *basicShader = nullptr;

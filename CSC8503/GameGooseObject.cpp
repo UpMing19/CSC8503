@@ -79,6 +79,14 @@ GameGooseObject::~GameGooseObject() {
 }
 
 void GameGooseObject::Update(float dt) {
+
+    for (int i = 1; i < pathToTarget.size(); ++i) {
+        Vector3 a = pathToTarget[i - 1];
+        Vector3 b = pathToTarget[i];
+
+        Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+    }
+
     if (counter > 2.0f) {
         CalculatePath();
         counter = 0.0f;
@@ -117,10 +125,4 @@ void GameGooseObject::CalculatePath() {
         pathToTarget.push_back(pos);
     }
 
-    for (int i = 1; i < pathToTarget.size(); ++i) {
-        Vector3 a = pathToTarget[i - 1];
-        Vector3 b = pathToTarget[i];
-
-        Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
-    }
 }

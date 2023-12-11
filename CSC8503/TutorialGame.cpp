@@ -64,6 +64,7 @@ void TutorialGame::InitialiseAssets() {
     capsuleMesh = renderer->LoadMesh("capsule.msh");
     gooseMesh = renderer->LoadMesh("goose.msh");
     cylinderMesh = renderer->LoadMesh("Cylinder.msh");
+    highrise = renderer->LoadMesh("Highrise_18.msh");
 
     basicTex = renderer->LoadTexture("checkerboard.png");
     basicShader = renderer->LoadShader("scene.vert", "scene.frag");
@@ -356,6 +357,7 @@ void TutorialGame::InitWorld() {
     InitMazeWorld();
     InitGamePlayerObject();
     InitGameToolsObject();
+    AddEndPointToWorld(Vector3(180,-20,390),Vector3(1,6,1));
     EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
     GooseObject = AddGameGooseObject(Vector3(220, -11, 190));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
@@ -466,6 +468,27 @@ TutorialGame::AddCubeToWorld(const Vector3 &position, Vector3 dimensions, float 
     return cube;
 }
 
+        GameObject *
+TutorialGame::AddEndPointToWorld(const Vector3 &position, Vector3 dimensions, float inverseMass, std::string name) {
+    GameObject *cube = new GameObject(name);
+
+    AABBVolume *volume = new AABBVolume(dimensions);
+    cube->SetBoundingVolume((CollisionVolume *) volume);
+
+    cube->GetTransform()
+            .SetPosition(position)
+            .SetScale(dimensions * 2);
+
+    cube->SetRenderObject(new RenderObject(&cube->GetTransform(), highrise, basicTex, basicShader));
+    cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+
+    cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+    cube->GetPhysicsObject()->InitCubeInertia();
+
+    world->AddGameObject(cube);
+
+    return cube;
+}
 GameObject *
 TutorialGame::AddGameDoorObject(NCL::Maths::Vector3 position, NCL::Maths::Vector3 dimensions, float inverseMass,
                                 std::string name) {
@@ -719,7 +742,7 @@ void TutorialGame::InitGamePlayerObject() {
 
     player = new GamePlayerObject();
     player->SetName("player");
-
+//    OBBVolume *volume = new OBBVolume(5.0f);
     SphereVolume *volume = new SphereVolume(4.0f);
     player->SetBoundingVolume((CollisionVolume *) volume);
 
