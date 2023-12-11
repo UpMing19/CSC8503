@@ -158,9 +158,9 @@ void TutorialGame::UpdateGame(float dt) {
 
 
     }
-    std::cout << "distance:"
-              << fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length())
-              << std::endl;
+//    std::cout << "distance:"
+//              << fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length())
+//              << std::endl;
     if (fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length()) < 9.0f)
         player->lose = true;
 
@@ -190,6 +190,8 @@ void TutorialGame::UpdateGame(float dt) {
     }
     if (EnemyObject != nullptr) EnemyObject->Update(dt);
     if (GooseObject != nullptr) GooseObject->Update(dt);
+
+    if (player->keyNum) BridgeConstraintTest();
 
     renderer->Render();
     Debug::UpdateRenderables(dt);
@@ -464,6 +466,29 @@ TutorialGame::AddCubeToWorld(const Vector3 &position, Vector3 dimensions, float 
     return cube;
 }
 
+GameObject *
+TutorialGame::AddGameDoorObject(NCL::Maths::Vector3 position, NCL::Maths::Vector3 dimensions, float inverseMass,
+                                std::string name) {
+    GameObject *cube = new GameObject(name);
+
+    AABBVolume *volume = new AABBVolume(dimensions);
+    cube->SetBoundingVolume((CollisionVolume *) volume);
+
+    cube->GetTransform()
+            .SetPosition(position)
+            .SetScale(dimensions * 2);
+
+    cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
+    cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+
+    cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+    cube->GetPhysicsObject()->InitCubeInertia();
+
+    world->AddGameObject(cube);
+    cube->GetRenderObject()->SetColour(Debug::MAGENTA);
+    return cube;
+}
+
 GameObject *TutorialGame::AddPlayerToWorld(const Vector3 &position, std::string name) {
     float meshSize = 1.0f;
     float inverseMass = 0.5f;
@@ -608,26 +633,9 @@ line - after the third, they'll be able to twist under torque aswell.
 
 
 void TutorialGame::BridgeConstraintTest() {
-    Vector3 cubeSize = Vector3(8, 8, 8);
-    float invCubeMass = 5;  // how heavy the middle pieces are
-    int numLinks = 10;
-    float maxDistance = 30;  // constraint distance
-    float cubeDistance = 20;  // distance between links
 
-    Vector3 startPos = Vector3(5, 100, 5);
-
-    GameObject *start = AddCubeToWorld(startPos + Vector3(0, 0, 0), cubeSize, 0);
-    GameObject *end = AddCubeToWorld(startPos + Vector3((numLinks + 2) * cubeDistance, 0, 0), cubeSize, 0);
-
-    GameObject *previous = start;
-
-    for (int i = 0; i < numLinks; ++i) {
-        GameObject *block = AddCubeToWorld(startPos + Vector3((i + 1) * cubeDistance, 0, 0), cubeSize, invCubeMass);
-        PositionConstraint *constraint = new PositionConstraint(previous, block, maxDistance);
-        world->AddConstraint(constraint);
-        previous = block;
-    }
-    PositionConstraint *constraint = new PositionConstraint(previous, end, maxDistance);
+    float maxDistance = 2.0f;  // constraint distance
+    PositionConstraint *constraint = new PositionConstraint(player, KeyObject, maxDistance);
     world->AddConstraint(constraint);
 }
 
@@ -760,7 +768,9 @@ void TutorialGame::InitGameToolsObject() {
             AddCoinToWorldWithColor(Vector3(i, -15, j), 0.5f, 0, "coinTools", Vector4(1, 1, 0, 1));
 
 
-    AddSphereToWorld(Vector3(170,-15,180),2.0f,0,"keyTools");
+    KeyObject = AddSphereToWorld(Vector3(170, -15, 180), 2.0f, 200.0, "keyTools");
+
+    GameObject *doorObject = AddGameDoorObject(Vector3(180, -15, 348), Vector3(30, 10 / 2, 1.0f), 0.0f, "Door");
 
 }
 
@@ -828,7 +838,7 @@ GameEnemyObject *TutorialGame::AddGameEnemyObject(Vector3 position) {
 }
 
 GameGooseObject *TutorialGame::AddGameGooseObject(Vector3 position) {
-    float meshSize = 7.0f;
+    float meshSize = 2.0f;
     float inverseMass = 5.0f;
 
     GameGooseObject *character = new GameGooseObject(grid, player);

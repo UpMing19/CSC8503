@@ -358,6 +358,7 @@ int main() {
     //TestStateMachine();
     //TestNetworking();
     Window *w = Window::CreateGameWindow("CSC8503 Game technology!", 1280, 720);
+    //Window *w = Window::CreateGameWindow("CSC8503 Game technology!", 600, 300);
     //TestPushdownAutomata(w);
     if (!w->HasInitialised()) {
         return -1;

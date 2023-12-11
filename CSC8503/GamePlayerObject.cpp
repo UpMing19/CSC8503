@@ -1,5 +1,6 @@
 
 #include "GamePlayerObject.h"
+#include "PhysicsObject.h"
 
 GamePlayerObject::GamePlayerObject() {
 
@@ -24,9 +25,15 @@ void GamePlayerObject::OnCollisionBegin(NCL::CSC8503::GameObject *otherObject) {
         itemsLeft--;
     }
     if (name == "player" && otherObject->GetName() == "keyTools") {
-        otherObject->SetIsActive(false);
-        otherObject->SetBoundingVolume(nullptr);
+       // otherObject->SetIsActive(false);
+       // otherObject->SetBoundingVolume(nullptr);
         keyNum++;
+    }
+    if (name == "player" && otherObject->GetName() == "Door" && keyNum) {
+         otherObject->GetPhysicsObject()->SetLinearVelocity(Vector3(0,-10,0));
+    }
+    if (name == "player" && otherObject->GetName() == "endPoint" && keyNum) {
+        win = true;
     }
 }
 

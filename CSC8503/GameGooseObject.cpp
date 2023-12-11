@@ -67,9 +67,9 @@ GameGooseObject::GameGooseObject(NavigationGrid *grid, GamePlayerObject *gameObj
         return target->keyNum;
     }));
 
-    stateMachine->AddTransition(new StateTransition(chase, patrol, [&]() -> bool {
-        return target->keyNum;
-    }));
+//    stateMachine->AddTransition(new StateTransition(chase, patrol, [&]() -> bool {
+//        return target->keyNum;
+//    }));
 
 
 }
@@ -79,12 +79,12 @@ GameGooseObject::~GameGooseObject() {
 }
 
 void GameGooseObject::Update(float dt) {
+    CalculatePath();
     stateMachine->Update(dt);
 }
 
 
 void GameGooseObject::MoveToTarget(float dt) {
-    CalculatePath();
 
     if (pathToTarget.size() > 0) {
         auto it = pathToTarget.begin();
@@ -103,9 +103,16 @@ void GameGooseObject::MoveToTarget(float dt) {
 void GameGooseObject::CalculatePath() {
     pathToTarget.clear();
     NavigationPath outPath;
-    bool found = grid->FindPath(GetTransform().GetPosition(), Vector3(210,-11,220), outPath);
+    bool found = grid->FindPath(GetTransform().GetPosition(), Vector3(220,-11,240), outPath);
     Vector3 pos;
     while (outPath.PopWaypoint(pos)) {
         pathToTarget.push_back(pos);
+    }
+
+    for (int i = 1; i < pathToTarget.size(); ++i) {
+        Vector3 a = pathToTarget[i - 1];
+        Vector3 b = pathToTarget[i];
+
+        Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
     }
 }

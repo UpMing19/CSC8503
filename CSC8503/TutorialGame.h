@@ -100,6 +100,7 @@ namespace NCL {
 
             GameGooseObject *AddGameGooseObject(Vector3 position);
             GameEnemyObject *AddGameEnemyObject(Vector3 position);
+            GameObject *AddGameDoorObject(Vector3 position, Vector3 dimensions, float inverseMass = 10.0f,std::string name = "uname");
 
 #ifdef USEVULKAN
             GameTechVulkanRenderer*	renderer;
@@ -154,6 +155,7 @@ namespace NCL {
 
             GameEnemyObject *EnemyObject = nullptr;
             GameGooseObject *GooseObject = nullptr;
+            GameObject *KeyObject = nullptr;
 
             Camera *cameraMain;
             GamePlayerFollowCamera *cameraFollow;
