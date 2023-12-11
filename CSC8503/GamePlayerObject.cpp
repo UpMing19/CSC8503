@@ -30,9 +30,10 @@ void GamePlayerObject::OnCollisionBegin(NCL::CSC8503::GameObject *otherObject) {
         keyNum++;
     }
     if (name == "player" && otherObject->GetName() == "Door" && keyNum) {
-        // otherObject->SetIsActive(false);
-       //  otherObject->SetBoundingVolume(nullptr);
          otherObject->GetPhysicsObject()->SetLinearVelocity(Vector3(0,-10,0));
+    }
+    if (name == "player" && otherObject->GetName() == "endPoint" && keyNum) {
+        win = true;
     }
 }
 
