@@ -465,7 +465,7 @@ void TutorialGame::InitWorld() {
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
     cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280), cylinderMesh);
 
-
+    AddOBBGameObject(Vector3(240, -13, 100.0f), Vector3(6.0f, 1.0f, 6.0f), Vector3(-45.0f, 0, 0), 20.0f, Debug::RED);
 }
 
 /*
@@ -991,3 +991,10 @@ GameGooseObject *TutorialGame::AddGameGooseObject(Vector3 position) {
     return character;
 }
 
+
+void TutorialGame::AddOBBGameObject(const Vector3& padPos, const Vector3& padSize, const Vector3& padRotation, const float& padForce, const Vector4& padColor)
+{
+    OBBGameObject* jumpPad = new OBBGameObject(*this, padPos + Vector3(0.0f, 0, 0.0f), padSize, padForce, padColor, cubeMesh, nullptr, basicShader);
+    jumpPad->GetTransform().SetOrientation(Quaternion::EulerAnglesToQuaternion(padRotation.x, padRotation.y, padRotation.z));
+    world->AddGameObject(jumpPad);
+}

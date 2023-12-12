@@ -16,6 +16,7 @@ set(Header_Files
         "CylinderStateGameObject.h"
         "GamePlayerFollowCamera.h"
         "GameDoorObject.h"
+        "OBBGameObject.h"
 
 )
 source_group("Header Files" FILES ${Header_Files})
@@ -34,6 +35,7 @@ set(Source_Files
         "CylinderStateGameObject.cpp"
         "GamePlayerFollowCamera.cpp"
         "GameDoorObject.cpp"
+        "OBBGameObject.cpp"
 )
 
 if (USE_VULKAN)

@@ -13,6 +13,7 @@
 #include "NavigationGrid.h"
 #include "StateGameObject.h"
 #include "GamePlayerObject.h"
+#include "OBBGameObject.h"
 #include "Vector4.h"
 #include "GameEnemyObject.h"
 #include "CylinderStateGameObject.h"
@@ -41,8 +42,9 @@ namespace NCL {
 
             GameServer *server;
             GameClient *client;
-
+            GamePlayerObject *player = nullptr;
             bool menu;
+            void AddOBBGameObject(const Vector3& padPos, const Vector3& padSize, const Vector3& padRotation, const float& padForce, const Vector4& padColor);
         protected:
             void InitialiseAssets();
 
@@ -163,7 +165,7 @@ namespace NCL {
 
             float gameCurrentTime = 0;
             float gameTime = 300.0f;
-            GamePlayerObject *player = nullptr;
+
 
 
             GameEnemyObject *EnemyObject = nullptr;
