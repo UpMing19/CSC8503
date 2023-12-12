@@ -3,7 +3,32 @@
 #include "PhysicsObject.h"
 #include "RenderObject.h"
 #include "TextureLoader.h"
+#include "Window.h"
 
+#include "Debug.h"
+
+#include "StateMachine.h"
+#include "StateTransition.h"
+#include "State.h"
+#include "MenuStates.h"
+
+#include "GameServer.h"
+#include "GameClient.h"
+
+#include "NavigationGrid.h"
+#include "NavigationMesh.h"
+
+#include "TutorialGame.h"
+#include "NetworkedGame.h"
+
+#include "PushdownMachine.h"
+
+#include "PushdownState.h"
+
+#include "BehaviourNode.h"
+#include "BehaviourSelector.h"
+#include "BehaviourSequence.h"
+#include "BehaviourAction.h"
 #include "PositionConstraint.h"
 #include "OrientationConstraint.h"
 #include "StateGameObject.h"
@@ -11,6 +36,45 @@
 
 using namespace NCL;
 using namespace CSC8503;
+
+
+struct GameObjectPact : public GamePacket {
+    GameObject *gameObject;
+
+    GameObjectPact(GameObject *object) {
+        type = BasicNetworkMessages::Full_State;
+        size = sizeof(*object);
+        gameObject = object;
+    }
+};
+
+class TestPacketReceiver : public PacketReceiver {
+public:
+    TestPacketReceiver(std::string name, GameWorld *w) {
+        this->name = name;
+        world = w;
+    }
+
+    void ReceivePacket(int type, GamePacket *payload, int source) {
+        if (type == BasicNetworkMessages::Full_State) {
+            GameObjectPact *realPacket = (GameObjectPact *) payload;
+            std::cout << "recive==" << std::endl;
+            world->AddGameObject(realPacket->gameObject);
+        }
+        if (type == BasicNetworkMessages::String_Message) {
+            StringPacket *realPacket = (StringPacket *) payload;
+            std::string msg = realPacket->GetStringFromData();
+            std::cout << name << " received message: " << msg << std::endl;
+
+        }
+
+    }
+
+protected:
+    std::string name;
+    GameWorld *world;
+};
+
 
 TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse()) {
     world = new GameWorld();
@@ -45,6 +109,31 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 
     InitialiseAssets();
     // BridgeConstraintTest();
+
+    NetworkBase::Initialise();
+
+    int port = NetworkBase::GetDefaultPort();
+    server = new GameServer(port, 4);
+    client = new GameClient();
+
+    bool canConnect = client->Connect(127, 0, 0, 1, port);
+
+    if (canConnect) {
+        std::cout << "ServerClientConnect" << std::endl;
+    } else {
+        std::cout << "ServerClientConnectFail" << std::endl;
+    }
+
+    TestPacketReceiver serverReceiver("Server", world);
+    TestPacketReceiver clientReceiver("Client", world);
+
+    server->RegisterPacketHandler(BasicNetworkMessages::Full_State, &serverReceiver);
+    server->RegisterPacketHandler(BasicNetworkMessages::String_Message, &serverReceiver);
+    client->RegisterPacketHandler(BasicNetworkMessages::Full_State, &clientReceiver);
+    client->RegisterPacketHandler(BasicNetworkMessages::String_Message, &clientReceiver);
+
+
+
 }
 
 /*
@@ -64,6 +153,7 @@ void TutorialGame::InitialiseAssets() {
     capsuleMesh = renderer->LoadMesh("capsule.msh");
     gooseMesh = renderer->LoadMesh("goose.msh");
     cylinderMesh = renderer->LoadMesh("Cylinder.msh");
+    highrise = renderer->LoadMesh("Highrise_18.msh");
 
     basicTex = renderer->LoadTexture("checkerboard.png");
     basicShader = renderer->LoadShader("scene.vert", "scene.frag");
@@ -104,6 +194,15 @@ void TutorialGame::UpdateGame(float dt) {
     }
 
     world->GetMainCamera()->UpdateCamera(dt);
+    GamePacket *msg = new GameObjectPact(player);
+
+    GamePacket *msgFromServer = new StringPacket(" Client says hello ! ");
+    client->SendPacket(*msgFromServer);
+
+    //std::cout<<"hasServer"<<std::endl;
+    //   server->SendGlobalPacket(*msg);
+    //  server->UpdateServer();
+    //  client->UpdateClient();
 
 
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
@@ -236,6 +335,10 @@ void TutorialGame::UpdateKeys() {
     }
 }
 
+void TutorialGame::AddClientObject(GameObject *gameObject) {
+    world->AddGameObject(gameObject);
+}
+
 void TutorialGame::LockedObjectMovement() {
 
     Matrix4 view = world->GetMainCamera()->BuildViewMatrix();
@@ -356,12 +459,13 @@ void TutorialGame::InitWorld() {
     InitMazeWorld();
     InitGamePlayerObject();
     InitGameToolsObject();
+    AddEndPointToWorld(Vector3(180, -20, 390), Vector3(1, 6, 1));
     EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
     GooseObject = AddGameGooseObject(Vector3(220, -11, 190));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
     cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280), cylinderMesh);
 
-
+    AddOBBGameObject(Vector3(240, -13, 100.0f), Vector3(6.0f, 1.0f, 6.0f), Vector3(-45.0f, 0, 0), 20.0f, Debug::RED);
 }
 
 /*
@@ -456,6 +560,28 @@ TutorialGame::AddCubeToWorld(const Vector3 &position, Vector3 dimensions, float 
             .SetScale(dimensions * 2);
 
     cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
+    cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+
+    cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+    cube->GetPhysicsObject()->InitCubeInertia();
+
+    world->AddGameObject(cube);
+
+    return cube;
+}
+
+GameObject *
+TutorialGame::AddEndPointToWorld(const Vector3 &position, Vector3 dimensions, float inverseMass, std::string name) {
+    GameObject *cube = new GameObject(name);
+
+    AABBVolume *volume = new AABBVolume(dimensions);
+    cube->SetBoundingVolume((CollisionVolume *) volume);
+
+    cube->GetTransform()
+            .SetPosition(position)
+            .SetScale(dimensions * 2);
+
+    cube->SetRenderObject(new RenderObject(&cube->GetTransform(), highrise, basicTex, basicShader));
     cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 
     cube->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -719,7 +845,7 @@ void TutorialGame::InitGamePlayerObject() {
 
     player = new GamePlayerObject();
     player->SetName("player");
-
+//    OBBVolume *volume = new OBBVolume(5.0f);
     SphereVolume *volume = new SphereVolume(4.0f);
     player->SetBoundingVolume((CollisionVolume *) volume);
 
@@ -865,3 +991,10 @@ GameGooseObject *TutorialGame::AddGameGooseObject(Vector3 position) {
     return character;
 }
 
+
+void TutorialGame::AddOBBGameObject(const Vector3& padPos, const Vector3& padSize, const Vector3& padRotation, const float& padForce, const Vector4& padColor)
+{
+    OBBGameObject* jumpPad = new OBBGameObject(*this, padPos + Vector3(0.0f, 0, 0.0f), padSize, padForce, padColor, cubeMesh, nullptr, basicShader);
+    jumpPad->GetTransform().SetOrientation(Quaternion::EulerAnglesToQuaternion(padRotation.x, padRotation.y, padRotation.z));
+    world->AddGameObject(jumpPad);
+}

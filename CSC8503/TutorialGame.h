@@ -7,16 +7,19 @@
 #ifdef USEVULKAN
 #include "GameTechVulkanRenderer.h"
 #endif
-
+#include "../CSC8503CoreClasses/GameServer.h"
 #include "GamePlayerFollowCamera.h"
 #include "PhysicsSystem.h"
 #include "NavigationGrid.h"
 #include "StateGameObject.h"
 #include "GamePlayerObject.h"
+#include "OBBGameObject.h"
 #include "Vector4.h"
 #include "GameEnemyObject.h"
 #include "CylinderStateGameObject.h"
-
+#include "../CSC8503CoreClasses/GameClient.h"
+#include "../CSC8503CoreClasses/PushdownMachine.h"
+#include "../CSC8503CoreClasses/PushdownState.h"
 namespace NCL {
     namespace CSC8503 {
         class TutorialGame {
@@ -33,6 +36,15 @@ namespace NCL {
 
             void InitCamera();
 
+            GameWorld * GetGameWorld(){return world;};
+
+            void AddClientObject(GameObject *gameObject);
+
+            GameServer *server;
+            GameClient *client;
+            GamePlayerObject *player = nullptr;
+            bool menu;
+            void AddOBBGameObject(const Vector3& padPos, const Vector3& padSize, const Vector3& padRotation, const float& padForce, const Vector4& padColor);
         protected:
             void InitialiseAssets();
 
@@ -72,7 +84,8 @@ namespace NCL {
 
             GameObject *AddCubeToWorld(const Vector3 &position, Vector3 dimensions, float inverseMass = 10.0f,
                                        std::string name = "uname");
-
+            GameObject *AddEndPointToWorld(const Vector3 &position, Vector3 dimensions, float inverseMass = 0.0f,
+                                       std::string name = "endPoint");
             GameObject *AddPlayerToWorld(const Vector3 &position, std::string name = "uname");
 
             GameObject *AddEnemyToWorld(const Vector3 &position, std::string name = "uname");
@@ -123,6 +136,8 @@ namespace NCL {
             Mesh *cubeMesh = nullptr;
             Mesh *sphereMesh = nullptr;
             Mesh *coinMesh = nullptr;
+            Mesh *highrise = nullptr;
+
 
             Texture *basicTex = nullptr;
             Shader *basicShader = nullptr;
@@ -146,11 +161,11 @@ namespace NCL {
 
             NavigationGrid *grid;
 
-            bool menu;
+
 
             float gameCurrentTime = 0;
             float gameTime = 300.0f;
-            GamePlayerObject *player = nullptr;
+
 
 
             GameEnemyObject *EnemyObject = nullptr;

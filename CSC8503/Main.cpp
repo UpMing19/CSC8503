@@ -207,6 +207,8 @@ void TestBehaviourTree() {
     std::cout << "All done !\n";
 }
 
+
+int pause_flag = 0;
 class PauseScreen : public PushdownState {
 
     PushdownResult OnUpdate(float dt, PushdownState **newState) override {
@@ -218,6 +220,7 @@ class PauseScreen : public PushdownState {
 
     void OnAwake() override {
         std::cout << " Press U to unpause game !\n";
+        pause_flag = 1;
     }
 
 };
@@ -246,6 +249,7 @@ class GameScreen : public PushdownState {
     };
 
     void OnAwake() override {
+        pause_flag  =0 ;
         std::cout << " Preparing to mine coins !\n";
     }
 
@@ -269,6 +273,7 @@ class IntroScreen : public PushdownState {
 
 
     void OnAwake() override {
+        pause_flag= 0 ;
         std::cout << " Welcome to a really awesome game !\n";
         std::cout << " Press Space To Begin or escape to quit !\n";
     }
@@ -285,10 +290,29 @@ void TestPushdownAutomata(Window *w) {
 }
 
 
+
+
+struct GameObjectPact:public GamePacket{
+    GameObject *gameObject;
+    GameObjectPact(GameObject *object){
+        type = BasicNetworkMessages::Full_State;
+        size = sizeof(object);
+        gameObject = object;
+    }
+};
+struct WorldObjectPact:public GamePacket{
+    TutorialGame *world;
+    WorldObjectPact(TutorialGame *w){
+        type = BasicNetworkMessages::Full_State;
+        size = sizeof(world);
+        world = w;
+    }
+};
 class TestPacketReceiver : public PacketReceiver {
 public:
-    TestPacketReceiver(std::string name) {
+    TestPacketReceiver(std::string name,TutorialGame *w) {
         this->name = name;
+        this->world = w;
     }
 
     void ReceivePacket(int type, GamePacket *payload, int source) {
@@ -297,63 +321,21 @@ public:
             std::string msg = realPacket->GetStringFromData();
             std::cout << name << " received message: " << msg << std::endl;
         }
+        if(type==Full_State){
+            GameObjectPact  *realPacket = (GameObjectPact  *)payload;
+
+        }
     }
 
 protected:
     std::string name;
+    TutorialGame *world ;
 };
 
-void TestNetworking() {
-
-    NetworkBase::Initialise();
-
-    TestPacketReceiver serverReceiver("Server");
-    TestPacketReceiver clientReceiver("Client");
-
-    int port = NetworkBase::GetDefaultPort();
-    //std::cout<<"port:"<<port<<std::endl;
-    //port = 1235;
-    GameServer *server = new GameServer(port, 3);
-    GameClient *client = new GameClient();
-
-    server->RegisterPacketHandler(String_Message, &serverReceiver);
-    client->RegisterPacketHandler(String_Message, &clientReceiver);
-
-    bool canConnect = client->Connect(127, 0, 0, 1, port);
-
-    for (int i = 0; i < 100; ++i) {
-        GamePacket *msgFromServer = new StringPacket(" Server says hello ! " + std::to_string(i));
-        GamePacket *msgFromClient = new StringPacket(" Client says hello ! " + std::to_string(i));
-        server->SendGlobalPacket(*msgFromServer);
-
-
-        client->SendPacket(*msgFromClient);
-
-        server->UpdateServer();
-        client->UpdateClient();
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-
-    NetworkBase::Destroy();
-}
-
-
-/*
-
-The main function should look pretty familar to you!
-We make a window, and then go into a while loop that repeatedly
-runs our 'game' until we press escape. Instead of making a 'renderer'
-and updating it, we instead make a whole game, and repeatedly update that,
-instead. 
-
-This time, we've added some extra functionality to the window class - we can
-hide or show the 
-
-*/
 int main() {
 
 
+  //  TestPacketReceiver clientReceiver("Client");
     //TestBehaviourTree();
     //TestStateMachine();
     //TestNetworking();
@@ -370,7 +352,7 @@ int main() {
 
     TutorialGame *g = new TutorialGame();
     PushdownMachine *menuState = new PushdownMachine( new MenuState(g));
-
+    PushdownMachine machine(new IntroScreen());
     w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
     while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
         float dt = w->GetTimer().GetTimeDeltaSeconds();
@@ -392,8 +374,14 @@ int main() {
 
         w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
 
-        g->UpdateGame(dt);
-        menuState->Update(dt);
+        machine.Update(dt);
+
+        if(!pause_flag){
+            g->UpdateGame(dt);
+            menuState->Update(dt);
+        }
+
+
         //DisplayPathfinding();
     }
 

@@ -26,7 +26,11 @@ void MenuState::OnAwake() {
 
 PushdownState::PushdownResult InitWorldState::OnUpdate(float dt, PushdownState **newState) {
     if (Window::GetKeyboard()->KeyDown(KeyCodes::F1))
+    {
         g->InitWorld();
+        g->InitCamera();
+    }
+
     if (Window::GetKeyboard()->KeyDown(KeyCodes::F3))
         return PushdownResult::Pop;
 

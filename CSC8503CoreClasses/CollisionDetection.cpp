@@ -117,6 +117,7 @@ bool CollisionDetection::RayOBBIntersection(const Ray &r, const Transform &world
 
     if (collided) {
         collision.collidedAt = transform * collision.collidedAt + position;
+        collision.collidedNormal = transform * collision.collidedNormal;
     }
     return collided;
 }
