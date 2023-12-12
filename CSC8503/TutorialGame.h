@@ -7,7 +7,7 @@
 #ifdef USEVULKAN
 #include "GameTechVulkanRenderer.h"
 #endif
-
+#include "../CSC8503CoreClasses/GameServer.h"
 #include "GamePlayerFollowCamera.h"
 #include "PhysicsSystem.h"
 #include "NavigationGrid.h"
@@ -16,7 +16,9 @@
 #include "Vector4.h"
 #include "GameEnemyObject.h"
 #include "CylinderStateGameObject.h"
-
+#include "../CSC8503CoreClasses/GameClient.h"
+#include "../CSC8503CoreClasses/PushdownMachine.h"
+#include "../CSC8503CoreClasses/PushdownState.h"
 namespace NCL {
     namespace CSC8503 {
         class TutorialGame {
@@ -33,6 +35,14 @@ namespace NCL {
 
             void InitCamera();
 
+            GameWorld * GetGameWorld(){return world;};
+
+            void AddClientObject(GameObject *gameObject);
+
+            GameServer *server;
+            GameClient *client;
+
+            bool menu;
         protected:
             void InitialiseAssets();
 
@@ -149,7 +159,7 @@ namespace NCL {
 
             NavigationGrid *grid;
 
-            bool menu;
+
 
             float gameCurrentTime = 0;
             float gameTime = 300.0f;

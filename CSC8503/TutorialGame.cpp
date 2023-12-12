@@ -3,7 +3,32 @@
 #include "PhysicsObject.h"
 #include "RenderObject.h"
 #include "TextureLoader.h"
+#include "Window.h"
 
+#include "Debug.h"
+
+#include "StateMachine.h"
+#include "StateTransition.h"
+#include "State.h"
+#include "MenuStates.h"
+
+#include "GameServer.h"
+#include "GameClient.h"
+
+#include "NavigationGrid.h"
+#include "NavigationMesh.h"
+
+#include "TutorialGame.h"
+#include "NetworkedGame.h"
+
+#include "PushdownMachine.h"
+
+#include "PushdownState.h"
+
+#include "BehaviourNode.h"
+#include "BehaviourSelector.h"
+#include "BehaviourSequence.h"
+#include "BehaviourAction.h"
 #include "PositionConstraint.h"
 #include "OrientationConstraint.h"
 #include "StateGameObject.h"
@@ -11,6 +36,45 @@
 
 using namespace NCL;
 using namespace CSC8503;
+
+
+struct GameObjectPact : public GamePacket {
+    GameObject *gameObject;
+
+    GameObjectPact(GameObject *object) {
+        type = BasicNetworkMessages::Full_State;
+        size = sizeof(*object);
+        gameObject = object;
+    }
+};
+
+class TestPacketReceiver : public PacketReceiver {
+public:
+    TestPacketReceiver(std::string name, GameWorld *w) {
+        this->name = name;
+        world = w;
+    }
+
+    void ReceivePacket(int type, GamePacket *payload, int source) {
+        if (type == BasicNetworkMessages::Full_State) {
+            GameObjectPact *realPacket = (GameObjectPact *) payload;
+            std::cout << "recive==" << std::endl;
+            world->AddGameObject(realPacket->gameObject);
+        }
+        if (type == BasicNetworkMessages::String_Message) {
+            StringPacket *realPacket = (StringPacket *) payload;
+            std::string msg = realPacket->GetStringFromData();
+            std::cout << name << " received message: " << msg << std::endl;
+
+        }
+
+    }
+
+protected:
+    std::string name;
+    GameWorld *world;
+};
+
 
 TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse()) {
     world = new GameWorld();
@@ -45,6 +109,31 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
 
     InitialiseAssets();
     // BridgeConstraintTest();
+
+    NetworkBase::Initialise();
+
+    int port = NetworkBase::GetDefaultPort();
+    server = new GameServer(port, 4);
+    client = new GameClient();
+
+    bool canConnect = client->Connect(127, 0, 0, 1, port);
+
+    if (canConnect) {
+        std::cout << "ServerClientConnect" << std::endl;
+    } else {
+        std::cout << "ServerClientConnectFail" << std::endl;
+    }
+
+    TestPacketReceiver serverReceiver("Server", world);
+    TestPacketReceiver clientReceiver("Client", world);
+
+    server->RegisterPacketHandler(BasicNetworkMessages::Full_State, &serverReceiver);
+    server->RegisterPacketHandler(BasicNetworkMessages::String_Message, &serverReceiver);
+    client->RegisterPacketHandler(BasicNetworkMessages::Full_State, &clientReceiver);
+    client->RegisterPacketHandler(BasicNetworkMessages::String_Message, &clientReceiver);
+
+
+
 }
 
 /*
@@ -88,7 +177,7 @@ TutorialGame::~TutorialGame() {
 }
 
 void TutorialGame::UpdateGame(float dt) {
-    //player->keyNum = 1;
+
     if (menu) {
         world->GetMainCamera()->SetPosition(Vector3(0, 0, 0));
         Debug::Print("1. Start Game ", Vector2(30, 40), Debug::GREEN);
@@ -105,6 +194,15 @@ void TutorialGame::UpdateGame(float dt) {
     }
 
     world->GetMainCamera()->UpdateCamera(dt);
+    GamePacket *msg = new GameObjectPact(player);
+
+    GamePacket *msgFromServer = new StringPacket(" Client says hello ! ");
+    client->SendPacket(*msgFromServer);
+
+    //std::cout<<"hasServer"<<std::endl;
+    //   server->SendGlobalPacket(*msg);
+    //  server->UpdateServer();
+    //  client->UpdateClient();
 
 
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
@@ -237,6 +335,10 @@ void TutorialGame::UpdateKeys() {
     }
 }
 
+void TutorialGame::AddClientObject(GameObject *gameObject) {
+    world->AddGameObject(gameObject);
+}
+
 void TutorialGame::LockedObjectMovement() {
 
     Matrix4 view = world->GetMainCamera()->BuildViewMatrix();
@@ -357,7 +459,7 @@ void TutorialGame::InitWorld() {
     InitMazeWorld();
     InitGamePlayerObject();
     InitGameToolsObject();
-    AddEndPointToWorld(Vector3(180,-20,390),Vector3(1,6,1));
+    AddEndPointToWorld(Vector3(180, -20, 390), Vector3(1, 6, 1));
     EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
     GooseObject = AddGameGooseObject(Vector3(220, -11, 190));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
@@ -468,7 +570,7 @@ TutorialGame::AddCubeToWorld(const Vector3 &position, Vector3 dimensions, float 
     return cube;
 }
 
-        GameObject *
+GameObject *
 TutorialGame::AddEndPointToWorld(const Vector3 &position, Vector3 dimensions, float inverseMass, std::string name) {
     GameObject *cube = new GameObject(name);
 
@@ -489,6 +591,7 @@ TutorialGame::AddEndPointToWorld(const Vector3 &position, Vector3 dimensions, fl
 
     return cube;
 }
+
 GameObject *
 TutorialGame::AddGameDoorObject(NCL::Maths::Vector3 position, NCL::Maths::Vector3 dimensions, float inverseMass,
                                 std::string name) {
