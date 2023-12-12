@@ -45,6 +45,7 @@ namespace NCL {
             GamePlayerObject *player = nullptr;
             bool menu;
             void AddOBBGameObject(const Vector3& padPos, const Vector3& padSize, const Vector3& padRotation, const float& padForce, const Vector4& padColor);
+            float ServerDt =0 ;
         protected:
             void InitialiseAssets();
 

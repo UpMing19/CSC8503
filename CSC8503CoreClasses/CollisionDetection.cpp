@@ -429,6 +429,7 @@ bool CollisionDetection::OBBSphereIntersection(const OBBVolume &volumeA, const T
 bool CollisionDetection::AABBCapsuleIntersection(
         const CapsuleVolume &volumeA, const Transform &worldTransformA,
         const AABBVolume &volumeB, const Transform &worldTransformB, CollisionInfo &collisionInfo) {
+
     return false;
 }
 
