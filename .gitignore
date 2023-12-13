@@ -46,6 +46,6 @@ NCLCoreClasses/CMakeFiles/*
 OpenGLRendering/CMakeFiles/*
 
 
-cmake-build-debug-visual-studio
-.cmake
-x64
+cmake-build-debug-visual-studio/
+.cmake/
+x64/
