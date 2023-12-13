@@ -104,7 +104,7 @@ void NetworkedGame::UpdateAsClient(float dt) {
 ////        newPacket.lastID = 0; //You'll need to work this out somehow...
 ////    }
 //    thisClient->SendPacket(*msgFromClient);
-if(player->hasSend) return ;
+    if (player->hasSend) return;
     if (player->win || player->lose) {
         player->hasSend = true;
         int score = player->score;

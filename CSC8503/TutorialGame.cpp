@@ -212,8 +212,8 @@ void TutorialGame::UpdateGame(float dt) {
 
         std::string ranking = "NetWork Ranking : " + std::to_string(player->itemsLeft);
         Debug::Print(ranking, Vector2(90 - time.length() - 10, 25), Debug::CYAN);
-if(player->msg!="")
-        Debug::Print(player->msg, Vector2(90 - player->msg.length() - 10, 30), Debug::RED);
+        if (player->msg != "")
+            Debug::Print(player->msg, Vector2(90 - player->msg.length() - 10, 30), Debug::RED);
 
         std::string ComeBackMenu = "F3 :ComeBackMenu ";
         Debug::Print(ComeBackMenu, Vector2(0, 10), Debug::BLUE);
@@ -430,12 +430,13 @@ void TutorialGame::InitWorld() {
     InitMazeWorld();
     InitGamePlayerObject();
     InitGameToolsObject();
+
     AddEndPointToWorld(Vector3(180, -20, 390), Vector3(1, 6, 1));
     EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
     GooseObject = AddGameGooseObject(Vector3(220, -11, 190));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
-    cylinderStateObject = AddStateObjectToWorld(Vector3(300, -10, 280), cylinderMesh);
-
+    //   cylinderStateObject = AddStateObjectToWorld(Vector3(300, 10, 280), capsuleMesh);
+    AddCapsuleToWorld(Vector3(300, 10, 280), 20.0f, 8.0f, 1.0f);
     AddOBBGameObject(Vector3(240, -13, 100.0f), Vector3(6.0f, 1.0f, 6.0f), Vector3(-45.0f, 0, 0), 20.0f, Debug::RED);
 }
 
@@ -459,6 +460,8 @@ GameObject *TutorialGame::AddFloorToWorld(const Vector3 &position, std::string n
 
     floor->GetPhysicsObject()->SetInverseMass(0);
     floor->GetPhysicsObject()->InitCubeInertia();
+
+//    floor->GetPhysicsObject()->SetCollisionType(CollisionType::Spring);
 
     world->AddGameObject(floor);
 
@@ -784,6 +787,31 @@ CylinderStateGameObject *TutorialGame::AddStateObjectToWorld(const Vector3 &posi
     return sphere;
 }
 
+GameObject *
+TutorialGame::AddCapsuleToWorld(const Vector3 &position, float halfHeight, float radius, float inverseMass) {
+    GameObject *capsule = new GameObject();
+    capsule->SetName("Capsule");
+
+    CapsuleVolume *volume = new CapsuleVolume(halfHeight, radius);
+    capsule->SetBoundingVolume((CollisionVolume *) volume);
+
+    capsule->GetTransform()
+            .SetScale(Vector3(radius * 2, halfHeight, radius * 2))
+            .SetPosition(position);
+
+    capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, basicShader));
+    capsule->SetPhysicsObject(new PhysicsObject(&capsule->GetTransform(), capsule->GetBoundingVolume()));
+
+    capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
+    capsule->GetPhysicsObject()->InitCubeInertia();
+
+   // capsule->GetPhysicsObject()->SetCollisionType(CollisionType::Spring);
+
+    world->AddGameObject(capsule);
+
+    return capsule;
+}
+
 void TutorialGame::InitMazeWorld() {
 
     if (grid == nullptr) {
@@ -885,7 +913,6 @@ void TutorialGame::EndGame() {
         std::string tit = "You Lose!!! ";
         Debug::Print(tit, Vector2(30, 40), Debug::RED);
     }
-
 
 
     std::string score = "Score = ";

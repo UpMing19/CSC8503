@@ -75,6 +75,7 @@ namespace NCL {
             void LockedObjectMovement();
 
             GameObject *AddFloorToWorld(const Vector3 &position, std::string name = "uname");
+            GameObject* AddCapsuleToWorld(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
 
             GameObject *AddCoinToWorldWithColor(const Vector3 &position, float radius, float inverseMass = 10.0f,
                                                 std::string name = "uname", Vector4 color = Vector4(1, 1, 1, 1));
