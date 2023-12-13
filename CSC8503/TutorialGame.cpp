@@ -228,7 +228,7 @@ void TutorialGame::UpdateGame(float dt) {
 //              << std::endl;
     if (fabs((EnemyObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length()) < 9.0f)
         player->lose = true;
-    if (fabs((GooseObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length()) < 9.0f)
+    if (fabs((GooseObject->GetTransform().GetPosition() - player->GetTransform().GetPosition()).Length()) < 9.0f &&player->keyNum)
         player->lose = true;
 
 
@@ -435,8 +435,8 @@ void TutorialGame::InitWorld() {
     EnemyObject = AddGameEnemyObject(Vector3(340, -12, 250));
     GooseObject = AddGameGooseObject(Vector3(220, -11, 190));
     testStateObject = AddStateObjectToWorld(Vector3(70, -10, 100));
-    //   cylinderStateObject = AddStateObjectToWorld(Vector3(300, 10, 280), capsuleMesh);
-    AddCapsuleToWorld(Vector3(300, 10, 280), 20.0f, 8.0f, 1.0f);
+    cylinderStateObject = AddStateObjectToWorld(Vector3(300, 10, 280), cylinderMesh);
+    AddCapsuleToWorld(Vector3(310, 10, 180), 20.0f, 8.0f, 1.0f);
     AddOBBGameObject(Vector3(240, -13, 100.0f), Vector3(6.0f, 1.0f, 6.0f), Vector3(-45.0f, 0, 0), 20.0f, Debug::RED);
 }
 
@@ -461,7 +461,7 @@ GameObject *TutorialGame::AddFloorToWorld(const Vector3 &position, std::string n
     floor->GetPhysicsObject()->SetInverseMass(0);
     floor->GetPhysicsObject()->InitCubeInertia();
 
-//    floor->GetPhysicsObject()->SetCollisionType(CollisionType::Spring);
+  // floor->GetPhysicsObject()->SetCollisionType(CollisionType::Spring);
 
     world->AddGameObject(floor);
 
@@ -805,7 +805,7 @@ TutorialGame::AddCapsuleToWorld(const Vector3 &position, float halfHeight, float
     capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
     capsule->GetPhysicsObject()->InitCubeInertia();
 
-   // capsule->GetPhysicsObject()->SetCollisionType(CollisionType::Spring);
+  //  capsule->GetPhysicsObject()->SetCollisionType(CollisionType::Spring);
 
     world->AddGameObject(capsule);
 
@@ -860,6 +860,9 @@ void TutorialGame::InitGamePlayerObject() {
     player->GetPhysicsObject()->InitSphereInertia();
 
     player->GetRenderObject()->SetColour(Debug::MAGENTA);
+
+ //   player->GetPhysicsObject()->SetCollisionType(CollisionType::Spring);
+
     world->AddGameObject(player);
 
 }
