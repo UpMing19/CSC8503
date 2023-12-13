@@ -76,7 +76,7 @@ void NetworkedGame::UpdateGame(float dt) {
     }
 
     if (!thisClient && !thisServer && Window::GetKeyboard()->KeyPressed(KeyCodes::F11)) {
-        std::cout<<"qidong"<<std::endl;
+        std::cout << "qidong" << std::endl;
         StartAsServer();
         StartAsClient(127, 0, 0, 1);
     }
@@ -95,15 +95,25 @@ void NetworkedGame::UpdateAsServer(float dt) {
 }
 
 void NetworkedGame::UpdateAsClient(float dt) {
-  //  ClientPacket newPacket;
-  //  GamePacket *msgFromServer = new StringPacket(" Server says hello ! " + std::to_string(i));
-    GamePacket *msgFromClient = new StringPacket(" Client says hello ! " + std::to_string(666));
-//    if (Window::GetKeyboard()->KeyPressed(KeyCodes::V)) {
-//        //fire button pressed!
-//        newPacket.buttonstates[0] = 1;
-//        newPacket.lastID = 0; //You'll need to work this out somehow...
-//    }
-    thisClient->SendPacket(*msgFromClient);
+//    //  ClientPacket newPacket;
+//    //  GamePacket *msgFromServer = new StringPacket(" Server says hello ! " + std::to_string(i));
+//    GamePacket *msgFromClient = new StringPacket(" Client says hello ! " + std::to_string(666));
+////    if (Window::GetKeyboard()->KeyPressed(KeyCodes::V)) {
+////        //fire button pressed!
+////        newPacket.buttonstates[0] = 1;
+////        newPacket.lastID = 0; //You'll need to work this out somehow...
+////    }
+//    thisClient->SendPacket(*msgFromClient);
+if(player->hasSend) return ;
+    if (player->win || player->lose) {
+        player->hasSend = true;
+        int score = player->score;
+        std::string playerMsg = "playerID:" + std::to_string(rand() % 100);
+        playerMsg = playerMsg + ", Score:" + std::to_string(score);
+        GamePacket *msgFromClient = new StringPacket(playerMsg);
+        thisClient->SendPacket(*msgFromClient);
+    }
+
 }
 
 void NetworkedGame::BroadcastSnapshot(bool deltaFrame) {
@@ -161,14 +171,17 @@ void NetworkedGame::SpawnPlayer() {
 
 void NetworkedGame::StartLevel() {
 
+
 }
 
 void NetworkedGame::ReceivePacket(int type, GamePacket *payload, int source) {
     if (type == String_Message) {
         StringPacket *realPacket = (StringPacket *) payload;
         std::string msg = realPacket->GetStringFromData();
-        std::cout  << " received message: " << msg << std::endl;
+        player->msg = msg;
+
     }
+
 
 }
 

@@ -210,6 +210,10 @@ void TutorialGame::UpdateGame(float dt) {
         std::string itemsLeft = "ItemsLeft = " + std::to_string(player->itemsLeft);
         Debug::Print(itemsLeft, Vector2(90 - time.length() - 10, 20), timerColor);
 
+        std::string ranking = "NetWork Ranking : " + std::to_string(player->itemsLeft);
+        Debug::Print(ranking, Vector2(90 - time.length() - 10, 25), Debug::CYAN);
+if(player->msg!="")
+        Debug::Print(player->msg, Vector2(90 - player->msg.length() - 10, 30), Debug::RED);
 
         std::string ComeBackMenu = "F3 :ComeBackMenu ";
         Debug::Print(ComeBackMenu, Vector2(0, 10), Debug::BLUE);
@@ -872,6 +876,7 @@ void TutorialGame::EndGame() {
     world->GetMainCamera()->SetPosition(Vector3(0, 0, 0));
     cameraMain->enableInput = false;
     cameraFollow->enableInput = false;
+    player->hasSend = true;
     if (player->win) {
         std::string tit = "You Win!!!";
         Debug::Print(tit, Vector2(30, 40), Debug::RED);
@@ -880,6 +885,7 @@ void TutorialGame::EndGame() {
         std::string tit = "You Lose!!! ";
         Debug::Print(tit, Vector2(30, 40), Debug::RED);
     }
+
 
 
     std::string score = "Score = ";
