@@ -350,9 +350,11 @@ int main() {
     w->LockMouseToWindow(true);
     //TestPathfinding();
 
-    TutorialGame *g = new TutorialGame();
+   // TutorialGame *g = new TutorialGame();
+    TutorialGame *g = new NetworkedGame();
     PushdownMachine *menuState = new PushdownMachine( new MenuState(g));
     PushdownMachine machine(new IntroScreen());
+
     w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
     while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
         float dt = w->GetTimer().GetTimeDeltaSeconds();

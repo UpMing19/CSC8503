@@ -105,29 +105,6 @@ TutorialGame::TutorialGame() : controller(*Window::GetWindow()->GetKeyboard(), *
     InitialiseAssets();
     // BridgeConstraintTest();
 
-    NetworkBase::Initialise();
-
-    TestPacketReceiver serverReceiver("Server");
-    TestPacketReceiver clientReceiver("Client");
-
-    int port = NetworkBase::GetDefaultPort();
-    server = new GameServer(port, 4);
-    client = new GameClient();
-
-
-    //  server->RegisterPacketHandler(BasicNetworkMessages::Full_State, &serverReceiver);
-    server->RegisterPacketHandler(BasicNetworkMessages::String_Message, &serverReceiver);
-    //   client->RegisterPacketHandler(BasicNetworkMessages::Full_State, &clientReceiver);
-    client->RegisterPacketHandler(BasicNetworkMessages::String_Message, &clientReceiver);
-    bool canConnect = client->Connect(127, 0, 0, 1, port);
-
-    if (canConnect) {
-        std::cout << "ServerClientConnect" << std::endl;
-    } else {
-        std::cout << "ServerClientConnectFail" << std::endl;
-    }
-
-
 }
 
 /*
@@ -168,7 +145,7 @@ TutorialGame::~TutorialGame() {
     delete physics;
     delete renderer;
     delete world;
-    NetworkBase::Destroy();
+
 }
 
 void TutorialGame::UpdateGame(float dt) {
@@ -189,28 +166,6 @@ void TutorialGame::UpdateGame(float dt) {
     }
 
     world->GetMainCamera()->UpdateCamera(dt);
-    ServerDt += dt;
-    GamePacket *msgFromServer = new StringPacket(" Server says hello ! " + std::to_string(dt));
-    GamePacket *msgFromClient = new StringPacket(" Client says hello ! " + std::to_string(dt));
-
-    server->SendGlobalPacket(*msgFromServer);
-    client->SendPacket(*msgFromClient);
-    if (ServerDt > 66) {
-
-
-     //   GamePacket *msgFromServer = new StringPacket(" Server says hello ! " + std::to_string(dt));
-     //   GamePacket *msgFromClient = new StringPacket(" Client says hello ! " + std::to_string(dt));
-      //  GamePacket *msg = new GameObjectPact(player);
-
-      //  server->SendGlobalPacket(*msgFromServer);
-       // client->SendPacket(*msgFromClient);
-
-        server->UpdateServer();
-        client->UpdateClient();
-
-
-        ServerDt = 0;
-    }
 
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
         inSelectionMode = !inSelectionMode;
