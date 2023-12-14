@@ -182,6 +182,28 @@ void TutorialGame::UpdateGame(float dt) {
 
     UpdateKeys();
 
+    RayCollision closestCollision;
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::K) && selectionObject) {
+        Vector3 rayPos;
+        Vector3 rayDir;
+
+        rayDir = selectionObject->GetTransform().GetOrientation() * Vector3(0, 0, -1);	//Forward Direction
+
+        rayPos = selectionObject->GetTransform().GetPosition();
+
+        Ray r = Ray(rayPos, rayDir);
+
+        if (world->Raycast(r, closestCollision, true, selectionObject)) {
+            if (objClosest) {
+                objClosest->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
+            }
+            objClosest = (GameObject*)closestCollision.node;
+            Debug::DrawLine(rayPos, objClosest->GetTransform().GetPosition(), Debug::GREEN);
+            objClosest->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
+
+            player->GetPhysicsObject()->SetLinearVelocity(rayDir*200);
+        }
+    }
 
     Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
     Debug::DrawLine(Vector3(), Vector3(100, 0, 0), Vector4(0, 1, 0, 1));
