@@ -827,7 +827,7 @@ TutorialGame::AddCapsuleToWorld(const Vector3 &position, float halfHeight, float
     capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
     capsule->GetPhysicsObject()->InitCubeInertia();
 
-  //  capsule->GetPhysicsObject()->SetCollisionType(CollisionType::Spring);
+  //  capsule->GetPhysicsObject()->SetCollisionType(CollisionType::Impulse);
 
     world->AddGameObject(capsule);
 
