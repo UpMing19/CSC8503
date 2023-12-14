@@ -24,7 +24,7 @@ namespace NCL {
 		protected:
 			void BasicCollisionDetection();
 			void BroadPhase();
-			void NarrowPhase();
+			void NarrowPhase(float dt);
 
 			void ClearForces();
 
@@ -37,6 +37,7 @@ namespace NCL {
 			void UpdateObjectAABBs();
 
 			void ImpulseResolveCollision(GameObject& a , GameObject&b, CollisionDetection::ContactPoint& p) const;
+            void ResolveSpringCollision(GameObject& a, GameObject&b, CollisionDetection::ContactPoint& p, float dt) const;
 
 			GameWorld& gameWorld;
 

@@ -61,11 +61,10 @@ namespace NCL {
 			}
 		};
 
-		static bool AABBCapsuleIntersection(
-			const CapsuleVolume& volumeA, const Transform& worldTransformA,
-			const AABBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
+        static bool AABBCapsuleIntersection(	const AABBVolume& volumeA, const Transform& worldTransformA,
+                                                const CapsuleVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
-		static bool SphereCapsuleIntersection(
+        static bool SphereCapsuleIntersection(
 			const CapsuleVolume& volumeA, const Transform& worldTransformA,
 			const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
@@ -111,6 +110,8 @@ namespace NCL {
 			const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
 
+        static bool CapsuleIntersection(const CapsuleVolume& volumeA, const Transform& worldTransformA,
+                                        const CapsuleVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
         static Vector3 Unproject(const Vector3& screenPos, const Camera& cam);
 

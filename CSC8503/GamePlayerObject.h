@@ -37,6 +37,8 @@ public:
     int score = 0;
     bool win = false;
     bool lose = false;
+    bool hasSend = false;
+    std::string msg = "";
 };
 
 
